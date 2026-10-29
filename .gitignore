@@ -1,0 +1,36 @@
+# Local tools and Python environments
+.tools/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Rust build output and native staging
+target/
+.local/
+
+# Player data and generated artifacts
+test-data/
+worlds/
+saves/
+logs/
+dist/
+*.hmod
+*.hnmod
+*.jar
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.key
+*.minisig
+secrets.json
+opencode.local.json
+opencode.local.jsonc
+
+# Editors and OS files
+.obsidian/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
