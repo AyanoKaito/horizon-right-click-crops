@@ -37,8 +37,8 @@ All behavior in this table is **proposed**, except the explicitly labelled exist
 | Beetroot | Mature crop to initial growth stage | One beetroot seed, not beetroot | Implemented; partial dev.3 group validation |
 | Nether wart | Mature wart to initial stage | One nether wart; preserve soul sand | Implemented; partial dev.4 group validation |
 | Cocoa | Mature pod to initial stage | One cocoa bean; preserve facing and supporting jungle log | Implemented; partial dev.4 group validation |
-| Torchflower | Mature field-grown flower to initial crop block | One torchflower seed; never invent a seed from the flower item | Candidate; needs distinct mature/crop ids and a field-versus-decoration rule |
-| Pitcher crop | Mature two-block crop to one initial crop | One pitcher pod; recognize either clicked half, no duplicate upper-half loot | Candidate; decorative pitcher plant must not be confused with planted crop |
+| Torchflower | Mature field-grown flower to initial crop block | One torchflower seed; never invent a seed from the flower item | Implemented; partial dev.5 group validation |
+| Pitcher crop | Mature two-block crop to one initial crop | One pitcher pod; recognize either clicked half, no duplicate upper-half loot | Implemented; partial dev.5 group validation |
 | Sugar cane | Harvest growth above a retained base in one targeted column | Keep the living base/support and water; no planting debit if no replant occurs | Special-rule candidate; explicitly named by RightClickHarvest |
 | Cactus | Harvest growth above a retained base in one targeted column | Keep base and sand; handle any cactus flower through ordinary updates | Special-rule candidate; explicitly named by RightClickHarvest |
 | Bamboo | Harvest growth above a retained base in one targeted column | Keep viable base; distinguish shoot/stalk; no age-based fake maturity | Special-rule candidate; exact reference behavior not established |

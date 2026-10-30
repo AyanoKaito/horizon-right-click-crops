@@ -41,9 +41,9 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
         self.assertIn(
             self.compatibility["status"],
-            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested"},
+            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested"},
         )
-        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4"})
+        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5"})
         if self.compatibility["status"] in {"wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested"}:
             self.assertTrue(self.compatibility["validation"]["native_build"].startswith("passed"))
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed")
@@ -59,6 +59,10 @@ class FoundationSourceTests(unittest.TestCase):
             self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "11-passed-dev4")
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev4-six-crop-stage")
             self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev4-offline")
+        if self.compatibility["status"] == "flower-crops-partially-gameplay-tested":
+            self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "11-passed-dev5")
+            self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev5-eight-crop-stage")
+            self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev5-offline-final-fix")
         self.assertEqual(self.compatibility["mixin_schema"], 5)
         self.assertEqual(self.compatibility["hook_policy"], "direct-revision-pinned")
 
@@ -157,17 +161,20 @@ class FoundationSourceTests(unittest.TestCase):
     def test_gameplay_uses_single_ordinary_loot_and_world_write(self):
         gameplay = (BUNDLE / "gameplay.rs").read_text()
         self.assertEqual(gameplay.count("game.block_loot_at("), 1)
-        self.assertEqual(gameplay.count("b.set_block("), 1)
+        self.assertEqual(gameplay.count("b.set_block("), 4)
         self.assertNotRegex(gameplay, r"\.break_block\(|\.native_give\(|\.consume_held\(")
         self.assertIn("game.integrated.is_some()", gameplay)
         self.assertIn("game.lan_acting_uuid == Some(server.owner)", gameplay)
         self.assertIn("(0..36).chain", gameplay)
         self.assertIn("if !written", gameplay)
+        self.assertIn("if let Some((upper_pos, upper_state)) = upper", gameplay)
+        self.assertIn("let _ = b.set_block(level, ticks, upper_at, upper_state, UPDATE_ALL)", gameplay)
+        self.assertIn("UPDATE_CLIENTS | UPDATE_KNOWN_SHAPE | UPDATE_SUPPRESS_DROPS", gameplay)
 
     def test_gameplay_uses_the_same_explicit_profile_for_maturity_and_payment(self):
         gameplay = (BUNDLE / "gameplay.rs").read_text()
         self.assertIn("core::crop_profile(&game.res.facts().get(state).name)?", gameplay)
-        self.assertIn("Some(crop.mature_age)", gameplay)
+        self.assertIn("crop.mature_age.is_some_and", gameplay)
         self.assertIn("core::select_payment(crop.planting_item,", gameplay)
         self.assertIn("core::spend_one(game.stack_in_mut(slot), crop.planting_item)", gameplay)
         self.assertIn("crop.support_below.is_some_and", gameplay)

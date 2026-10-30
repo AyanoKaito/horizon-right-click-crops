@@ -10,7 +10,9 @@ Version `0.1.0-dev.3` extends that same field-crop adapter to carrots, potatoes 
 
 Version `0.1.0-dev.4` adds nether wart and attached cocoa; see its [separate validation record](docs/wart-cocoa-validation.md). Both retain the same loot-first payment rule, while wart keeps soul sand and cocoa keeps its facing and attachment. Version-specific test results are documented separately; earlier wheat or field-crop checks are not silently relabelled as new evidence.
 
-The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and plants outside the six explicit crop profiles remain unchanged.
+Version `0.1.0-dev.5` adds farm-grown torchflowers and two-block pitcher crops. Their [validation record](docs/flower-crop-validation.md) covers the mature-block transition and upper/lower normalization separately from ordinary field crops.
+
+The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and plants outside the eight explicit crop profiles remain unchanged.
 
 Additional isolated checks compare four tool cases, including Fortune III, against the ordinary game; all 16 paired crops preserved ordinary loot minus exactly one seed per replant. Nonempty seedless loot was checked with a separately authored test-only resource fixture, not by changing ordinary installed loot or the mod's runtime tables. See the validation record for scope, raw-evidence locations and remaining acceptance work.
 

@@ -3,30 +3,34 @@ use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.4";
-pub const MOD_DESCRIPTION: &str = "Survival field crops, nether wart and cocoa. Restart after toggling.";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Six crops active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.5";
+pub const MOD_DESCRIPTION: &str = "Survival harvesting for eight crop families. Restart after toggling.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Eight crop families active; toggles require a full game restart.";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crop {
-    pub mature_age: &'static str,
+    pub mature_age: Option<&'static str>,
     pub planting_item: &'static str,
     // Cocoa uses the game's direction-sensitive survival check instead.
     pub support_below: Option<&'static str>,
+    pub initial_block: Option<&'static str>,
+    pub two_blocks: bool,
 }
 
 // Explicit profiles, not every block with an age property.
 pub fn crop_profile(block: &str) -> Option<Crop> {
-    let (mature_age, planting_item, support_below) = match block {
-        "minecraft:wheat" => ("7", "minecraft:wheat_seeds", Some("minecraft:farmland")),
-        "minecraft:carrots" => ("7", "minecraft:carrot", Some("minecraft:farmland")),
-        "minecraft:potatoes" => ("7", "minecraft:potato", Some("minecraft:farmland")),
-        "minecraft:beetroots" => ("3", "minecraft:beetroot_seeds", Some("minecraft:farmland")),
-        "minecraft:nether_wart" => ("3", "minecraft:nether_wart", Some("minecraft:soul_sand")),
-        "minecraft:cocoa" => ("2", "minecraft:cocoa_beans", None),
+    let (mature_age, planting_item, support_below, initial_block, two_blocks) = match block {
+        "minecraft:wheat" => (Some("7"), "minecraft:wheat_seeds", Some("minecraft:farmland"), None, false),
+        "minecraft:carrots" => (Some("7"), "minecraft:carrot", Some("minecraft:farmland"), None, false),
+        "minecraft:potatoes" => (Some("7"), "minecraft:potato", Some("minecraft:farmland"), None, false),
+        "minecraft:beetroots" => (Some("3"), "minecraft:beetroot_seeds", Some("minecraft:farmland"), None, false),
+        "minecraft:nether_wart" => (Some("3"), "minecraft:nether_wart", Some("minecraft:soul_sand"), None, false),
+        "minecraft:cocoa" => (Some("2"), "minecraft:cocoa_beans", None, None, false),
+        "minecraft:torchflower" => (None, "minecraft:torchflower_seeds", Some("minecraft:farmland"), Some("minecraft:torchflower_crop"), false),
+        "minecraft:pitcher_crop" => (Some("4"), "minecraft:pitcher_pod", Some("minecraft:farmland"), None, true),
         _ => return None,
     };
-    Some(Crop { mature_age, planting_item, support_below })
+    Some(Crop { mature_age, planting_item, support_below, initial_block, two_blocks })
 }
 
 static ENABLED: OnceLock<bool> = OnceLock::new();
@@ -179,24 +183,26 @@ mod tests {
 
     #[test]
     fn field_profiles_have_exact_maturity_and_planting_items() {
-        for (block, age, item, support) in [
-            ("minecraft:wheat", "7", SEED, Some("minecraft:farmland")),
-            ("minecraft:carrots", "7", "minecraft:carrot", Some("minecraft:farmland")),
-            ("minecraft:potatoes", "7", "minecraft:potato", Some("minecraft:farmland")),
-            ("minecraft:beetroots", "3", "minecraft:beetroot_seeds", Some("minecraft:farmland")),
-            ("minecraft:nether_wart", "3", "minecraft:nether_wart", Some("minecraft:soul_sand")),
-            ("minecraft:cocoa", "2", "minecraft:cocoa_beans", None),
+        for (block, age, item, support, initial, tall) in [
+            ("minecraft:wheat", Some("7"), SEED, Some("minecraft:farmland"), None, false),
+            ("minecraft:carrots", Some("7"), "minecraft:carrot", Some("minecraft:farmland"), None, false),
+            ("minecraft:potatoes", Some("7"), "minecraft:potato", Some("minecraft:farmland"), None, false),
+            ("minecraft:beetroots", Some("3"), "minecraft:beetroot_seeds", Some("minecraft:farmland"), None, false),
+            ("minecraft:nether_wart", Some("3"), "minecraft:nether_wart", Some("minecraft:soul_sand"), None, false),
+            ("minecraft:cocoa", Some("2"), "minecraft:cocoa_beans", None, None, false),
+            ("minecraft:torchflower", None, "minecraft:torchflower_seeds", Some("minecraft:farmland"), Some("minecraft:torchflower_crop"), false),
+            ("minecraft:pitcher_crop", Some("4"), "minecraft:pitcher_pod", Some("minecraft:farmland"), None, true),
         ] {
-            assert_eq!(crop_profile(block), Some(Crop { mature_age: age, planting_item: item, support_below: support }));
+            assert_eq!(crop_profile(block), Some(Crop { mature_age: age, planting_item: item, support_below: support, initial_block: initial, two_blocks: tall }));
         }
-        for block in ["minecraft:torchflower", "minecraft:sweet_berry_bush", "minecraft:air"] {
+        for block in ["minecraft:torchflower_crop", "minecraft:pitcher_plant", "minecraft:sweet_berry_bush", "minecraft:air"] {
             assert_eq!(crop_profile(block), None);
         }
     }
 
     #[test]
     fn every_profile_pays_only_its_own_item_and_prefers_loot() {
-        let items = [SEED, "minecraft:carrot", "minecraft:potato", "minecraft:beetroot_seeds", "minecraft:nether_wart", "minecraft:cocoa_beans"];
+        let items = [SEED, "minecraft:carrot", "minecraft:potato", "minecraft:beetroot_seeds", "minecraft:nether_wart", "minecraft:cocoa_beans", "minecraft:torchflower_seeds", "minecraft:pitcher_pod"];
         for item in items {
             let loot = [Stack(item, 2)];
             let inventory = [Stack(item, 4)];

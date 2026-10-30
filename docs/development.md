@@ -10,6 +10,8 @@ Version `0.1.0-dev.3` extends the same adapter to carrots, potatoes and beetroot
 
 Version `0.1.0-dev.4` adds nether wart and cocoa. Its [group validation](wart-cocoa-validation.md) passed 16 survival/ordinary-interaction checks, 11 standalone Rust tests, 25 Python tests and the staged-source audit. The batch included support/facing preservation and accelerated regrowth; it does not establish default-speed timing or multiplayer compatibility.
 
+Version `0.1.0-dev.5` adds torchflower and pitcher crop. Its [group validation](flower-crop-validation.md) passed 14 final checks after grouped tests exposed and corrected two pitcher-half defects: write-order rollback and duplicate shape-removal loot. The final package also passed 11 standalone Rust tests, 25 Python tests and the staged-source audit. A stable generated-workspace path reduced corrective rebuilds to 1m55s and 1m40s from the approximately six-minute fresh build; pristine sources remained separate and unchanged.
+
 ## Foundation and preparation history
 
 The harmless `dev.1` native foundation compiled against the pinned Horizon source on Windows, and its four tests passed both standalone and inside the game test binary. A separately approved isolated default-server-thread smoke test also passed, including the mod row, survival block-use logging, and disabling across a process restart. The test games were closed. At that stage, there was no harvesting implementation or release `.hnmod`; foundation checks were not harvest acceptance.
