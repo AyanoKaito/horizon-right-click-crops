@@ -3,9 +3,9 @@ use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.7";
-pub const MOD_DESCRIPTION: &str = "Survival harvesting for crops and six vertical plants. Restart after toggling.";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Fourteen plant families active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.8";
+pub const MOD_DESCRIPTION: &str = "Survival harvesting for sixteen plant families. Restart after toggling.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Sixteen plant families active; toggles require a full game restart.";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crop {
@@ -55,6 +55,29 @@ pub fn vertical_profile(block: &str) -> Option<VerticalPlant> {
 
 pub fn same_vertical_plant(block: &str, profile: VerticalPlant) -> bool {
     block == profile.head || block == profile.body
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct StemFruit {
+    pub fruit: &'static str,
+    pub attached_stem: &'static str,
+    pub stem: &'static str,
+}
+
+pub fn stem_fruit_profile(block: &str) -> Option<StemFruit> {
+    match block {
+        "minecraft:pumpkin" => Some(StemFruit {
+            fruit: "minecraft:pumpkin",
+            attached_stem: "minecraft:attached_pumpkin_stem",
+            stem: "minecraft:pumpkin_stem",
+        }),
+        "minecraft:melon" => Some(StemFruit {
+            fruit: "minecraft:melon",
+            attached_stem: "minecraft:attached_melon_stem",
+            stem: "minecraft:melon_stem",
+        }),
+        _ => None,
+    }
 }
 
 static ENABLED: OnceLock<bool> = OnceLock::new();
@@ -266,6 +289,23 @@ mod tests {
         }
         for name in ["minecraft:bamboo_sapling", "minecraft:cave_vines", "minecraft:vine"] {
             assert_eq!(vertical_profile(name), None);
+        }
+    }
+
+    #[test]
+    fn stem_fruits_are_explicit_and_decorations_are_excluded() {
+        assert_eq!(stem_fruit_profile("minecraft:pumpkin"), Some(StemFruit {
+            fruit: "minecraft:pumpkin",
+            attached_stem: "minecraft:attached_pumpkin_stem",
+            stem: "minecraft:pumpkin_stem",
+        }));
+        assert_eq!(stem_fruit_profile("minecraft:melon"), Some(StemFruit {
+            fruit: "minecraft:melon",
+            attached_stem: "minecraft:attached_melon_stem",
+            stem: "minecraft:melon_stem",
+        }));
+        for name in ["minecraft:carved_pumpkin", "minecraft:jack_o_lantern", "minecraft:pumpkin_stem"] {
+            assert_eq!(stem_fruit_profile(name), None);
         }
     }
 }

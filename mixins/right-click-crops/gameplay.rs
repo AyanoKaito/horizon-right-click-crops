@@ -25,9 +25,15 @@ struct ColumnTarget {
     blocks: Vec<([i32; 3], BlockStateId)>,
 }
 
+struct FruitTarget {
+    pos: [i32; 3],
+    state: BlockStateId,
+}
+
 enum Target {
     Crop(CropTarget),
     Column(ColumnTarget),
+    Fruit(FruitTarget),
 }
 
 fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
@@ -59,6 +65,28 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
             blocks.push(([hit.pos[0], y, hit.pos[2]], state));
         }
         if !blocks.is_empty() { return Some(Target::Column(ColumnTarget { blocks })); }
+        return None;
+    }
+    if let Some(fruit) = core::stem_fruit_profile(&clicked_name) {
+        let shears = |s: &ItemStack| s.count > 0 && &*s.item == "minecraft:shears";
+        if fruit.fruit == "minecraft:pumpkin"
+            && (main.is_some_and(shears) || game.offhand.as_ref().is_some_and(shears))
+        {
+            return None;
+        }
+        if !game.border.contains(f64::from(hit.pos[0]), f64::from(hit.pos[2])) {
+            return None;
+        }
+        for (dx, dz, facing) in [(-1, 0, "east"), (1, 0, "west"), (0, -1, "south"), (0, 1, "north")] {
+            let stem_pos = [hit.pos[0] + dx, hit.pos[1], hit.pos[2] + dz];
+            let stem_state = game.world.block(stem_pos[0], stem_pos[1], stem_pos[2]);
+            if &*game.res.facts().get(stem_state).name == fruit.attached_stem
+                && game.pack.assets.registry.state(stem_state)?
+                    .properties.get("facing").map(String::as_str) == Some(facing)
+            {
+                return Some(Target::Fruit(FruitTarget { pos: hit.pos, state: clicked_state }));
+            }
+        }
         return None;
     }
     let mut pos = hit.pos;
@@ -134,6 +162,27 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
             for stack in loot {
                 if stack.count > 0 && &*stack.item != "minecraft:air" {
                     game.pop_resource(hit.pos, stack);
+                }
+            }
+            game.process_level_events()?;
+            game.swing_arm();
+            return Ok(true);
+        }
+        Target::Fruit(fruit) => {
+            let held = game.held().cloned();
+            let loot = if game.ui.rules.bool("block_drops") {
+                game.block_loot_at(fruit.pos, fruit.state, held.as_ref())
+            } else {
+                Vec::new()
+            };
+            let at = BlockPos::new(fruit.pos[0], fruit.pos[1], fruit.pos[2]);
+            let written = game.with_level(|b, level, ticks| {
+                b.set_block(level, ticks, at, BlockStateId(0), UPDATE_ALL | UPDATE_SUPPRESS_DROPS)
+            });
+            if !written { return Ok(true); }
+            for stack in loot {
+                if stack.count > 0 && &*stack.item != "minecraft:air" {
+                    game.pop_resource(fruit.pos, stack);
                 }
             }
             game.process_level_events()?;

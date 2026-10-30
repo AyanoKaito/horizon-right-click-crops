@@ -45,8 +45,8 @@ All behavior in this table is **proposed**, except the explicitly labelled exist
 | Kelp | Harvest one connected plant while retaining its base | Preserve water and a viable kelp growth state | Implemented; partial dev.7 group validation |
 | Twisting vines | Harvest one connected vine while retaining its rooted portion | Preserve the correct grounded end and head/body transitions | Implemented; partial dev.7 group validation |
 | Weeping vines | Harvest one connected hanging vine while retaining its attachment | Preserve the ceiling-side anchor, not an arbitrary lowest block | Implemented; partial dev.7 group validation |
-| Pumpkin | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary shears/carving | Special-rule candidate; farm-grown versus placed decorative fruit needs a rule |
-| Melon | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary tool/Fortune/Silk Touch loot | Special-rule candidate; no fixed slice count |
+| Pumpkin | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary shears/carving | Implemented; partial dev.8 group validation |
+| Melon | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary tool/Fortune/Silk Touch loot | Implemented; partial dev.8 group validation |
 | Sweet berries | Leave the ordinary right-click harvest in control | No extra seed payment, no second loot calculation | Ordinary bush harvest tested with mod enabled |
 | Glow berries | Leave the ordinary right-click harvest in control | Keep vine and ordinary berry flag changes; no extra payment/drop | Ordinary cave-vine harvest tested with mod enabled |
 
