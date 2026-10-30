@@ -14,7 +14,7 @@ fn enabled(game: &Game<'_>) -> bool {
     core::enabled(game.native_on(core::MOD_ID))
 }
 
-fn target(game: &Game<'_>, hit: &Hit) -> Option<BlockStateId> {
+fn target(game: &Game<'_>, hit: &Hit) -> Option<(BlockStateId, core::Crop)> {
     let bone_meal = |s: &ItemStack| s.count > 0 && &*s.item == "minecraft:bone_meal";
     let main = game.stack_in(game.selected);
     if game.mode != GameMode::Survival
@@ -26,10 +26,10 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<BlockStateId> {
         return None;
     }
     let state = game.world.block(hit.pos[0], hit.pos[1], hit.pos[2]);
-    if &*game.res.facts().get(state).name == "minecraft:wheat"
-        && game.pack.assets.registry.state(state)?.properties.get("age").map(String::as_str) == Some("7")
+    let crop = core::crop_profile(&game.res.facts().get(state).name)?;
+    if game.pack.assets.registry.state(state)?.properties.get("age").map(String::as_str) == Some(crop.mature_age)
     {
-        Some(state)
+        Some((state, crop))
     } else {
         None
     }
@@ -51,7 +51,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
     };
     if !local_actor { return Ok(false); }
     let Some(hit) = hit else { return Ok(false); };
-    let Some(state) = target(game, hit) else { return Ok(false); };
+    let Some((state, crop)) = target(game, hit) else { return Ok(false); };
     let pos = hit.pos;
     let at = BlockPos::new(pos[0], pos[1], pos[2]);
     let Some(young) = game.with_props(state, &[("age", "0")]) else { return Ok(true); };
@@ -69,9 +69,9 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
         Vec::new()
     };
     let slots = (0..36).chain(std::iter::once(super::shield::OFFHAND_SLOT));
-    let payment = core::select_payment(&loot, slots.filter_map(|slot| game.stack_in(slot).map(|s| (slot, s))));
+    let payment = core::select_payment(crop.planting_item, &loot, slots.filter_map(|slot| game.stack_in(slot).map(|s| (slot, s))));
     let after = if payment == core::Payment::None { BlockStateId(0) } else { young };
-    // Wheat age changes/air removal have no block entity or pre-remove effects.
+    // These field crops have no block entity or pre-remove effects.
     // On this thread no other player can alter the target between check and write.
     let written = game.with_level(|b, level, ticks| {
         b.set_block(level, ticks, at, after, UPDATE_ALL)
@@ -81,7 +81,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
         core::Payment::Loot(index) => {
             loot[index].count -= 1;
         }
-        core::Payment::Inventory(slot) => core::spend_one(game.stack_in_mut(slot)),
+        core::Payment::Inventory(slot) => core::spend_one(game.stack_in_mut(slot), crop.planting_item),
         core::Payment::None => {}
     }
     for stack in loot {

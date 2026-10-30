@@ -41,9 +41,9 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
         self.assertIn(
             self.compatibility["status"],
-            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested"},
+            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested"},
         )
-        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial"})
+        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3"})
         if self.compatibility["status"] in {"wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested"}:
             self.assertTrue(self.compatibility["validation"]["native_build"].startswith("passed"))
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed")
@@ -51,6 +51,10 @@ class FoundationSourceTests(unittest.TestCase):
         if self.compatibility["status"] == "wheat-partially-gameplay-tested":
             self.assertEqual(self.compatibility["validation"]["game_launch"], "passed")
             self.assertEqual(self.compatibility["validation"]["disabled_after_process_restart"], "passed-foundation-and-wheat-dev2")
+        if self.compatibility["status"].startswith("field-crops-"):
+            self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "11-passed-dev3")
+            self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev3-four-field-crop-stage")
+            self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev3-offline")
         self.assertEqual(self.compatibility["mixin_schema"], 5)
         self.assertEqual(self.compatibility["hook_policy"], "direct-revision-pinned")
 
@@ -155,6 +159,14 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertIn("game.lan_acting_uuid == Some(server.owner)", gameplay)
         self.assertIn("(0..36).chain", gameplay)
         self.assertIn("if !written", gameplay)
+
+    def test_gameplay_uses_the_same_explicit_profile_for_maturity_and_payment(self):
+        gameplay = (BUNDLE / "gameplay.rs").read_text()
+        self.assertIn("core::crop_profile(&game.res.facts().get(state).name)?", gameplay)
+        self.assertIn("Some(crop.mature_age)", gameplay)
+        self.assertIn("core::select_payment(crop.planting_item,", gameplay)
+        self.assertIn("core::spend_one(game.stack_in_mut(slot), crop.planting_item)", gameplay)
+        self.assertIn('!= "minecraft:farmland"', gameplay)
 
     def test_bundle_source_and_metadata_use_english_text(self):
         paths = list(BUNDLE.glob("*.rs")) + [ROOT / "compatibility.json"]

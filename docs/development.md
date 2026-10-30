@@ -6,6 +6,8 @@ The user authorized actual wheat implementation on 2026-10-30 after the successf
 
 The user's subsequent continuation covered additional isolated single-player verification: paired ordinary-game loot comparisons, authoritative Fortune/Silk Touch fixtures, nonempty seedless loot, ground-seed exclusion and item persistence, ordinary berries and restart-disabled actions. No gameplay source change or native rebuild was needed for those additional checks. Twenty-four Python tests now include the standalone observation verifier. Third-party protection/capability work, default-speed growth timing and multiplayer remain separate unverified scope.
 
+Version `0.1.0-dev.3` extends the same adapter to carrots, potatoes and beetroot. A compact [group validation](field-crop-validation.md) passed 24 survival/ordinary-interaction checks after one fixture sightline correction, 11 standalone Rust tests, 25 Python tests and the staged-source audit. The earlier wheat evidence remains identified by its original version. No additional plant groups or multiplayer capability are claimed here.
+
 ## Foundation and preparation history
 
 The harmless `dev.1` native foundation compiled against the pinned Horizon source on Windows, and its four tests passed both standalone and inside the game test binary. A separately approved isolated default-server-thread smoke test also passed, including the mod row, survival block-use logging, and disabling across a process restart. The test games were closed. At that stage, there was no harvesting implementation or release `.hnmod`; foundation checks were not harvest acceptance.
@@ -63,6 +65,15 @@ Do not repeat `specify init --force` in an existing clone: infrastructure is alr
 The CLI version is pinned, but its complete transitive dependency graph is not locked yet. These are development tools, not the mod's runtime dependencies. The standalone Rust foundation uses only the standard library; its manually prepared lockfile passed an actual locked, offline Cargo test run. The AST audit has a separate development-only lockfile. Integration uses the exact source/tool pins recorded in `compatibility.json`, validated for foundation compilation only, not gameplay compatibility.
 
 ## Test preparation versus test execution
+
+### Efficient test batches (approved 2026-10-30)
+
+- Documentation-only edits: check the diff and affected links; do not rebuild or launch the game.
+- During implementation: run the existing fast structural/payment tests together. Build and audit once for a coherent plant group, using the existing pinned toolchain and caches; rebuild again only after relevant source/input changes.
+- In-game batches: prepare all cases for the group together in isolated data, then exercise each plant in survival. Reuse prepared fixtures by restoring a known clean baseline, not by relying on a previous case's leftovers. Gather state, inventory and drops through the existing control harness where practical; inspect summaries rather than repeatedly dumping full snapshots into chat.
+- Keep per-family maturity, correct payment, loot and unique structure/regrowth checks. Shared hand, permission, duplicate-processing and persistence cases can share one batch; rerun the affected cases whenever their common adapter, loot inputs, pins or resources change. Retain a short wheat/berry regression per group and a full applicable integrated regression before acceptance. Do not repeat the entire wheat campaign for every new plant.
+- Reuse earlier evidence only with its exact input/version limits stated. A changed path invalidates its affected evidence; skipped checks remain explicitly unverified. Long default-speed growth observation is a separate pending check, not a blocking wait inside every batch or a claim inferred from accelerated growth.
+- User updates: one plain-Russian purpose before a substantial batch, then a short result with passed/failed/not-run and the next action. Store detailed commands and observations in files; show them only for a failure or on request. No scheduled/background automation is introduced by this policy.
 
 1. Use an isolated test world, never a real player save.
 2. Creative mode and commands may provide farmland, crops, tools, seeds, and bone meal. Bone meal may prepare mature crops quickly; no survival resource grind is required for fixture preparation.

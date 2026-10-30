@@ -1,5 +1,5 @@
 {
-  "status": "wheat-partially-gameplay-tested",
+  "status": "field-crops-partially-gameplay-tested",
   "horizon_repository": "https://github.com/horizon-rust/horizon",
   "horizon_revision": "64e298952d8bbb1188108bd4de68be2ab25d202b",
   "horizon_source_tag": "nightly-source/2026-10-29-64e2989",
@@ -10,22 +10,23 @@
   "intended_rust_version": "1.99.1",
   "intended_host": "x86_64-pc-windows-gnu",
   "validation": {
-    "standalone_rust_tests": "9-passed",
+    "standalone_rust_tests": "11-passed-dev3",
     "real_mixin_plan": "passed",
     "pristine_source_hashes": "3570-unchanged",
     "foundation_ast_audit": "passed-dev.1",
-    "wheat_ast_audit": "passed",
-    "native_build": "passed-final-rebuild-without-warnings",
-    "native_runtime_tests": "9-passed-159-upstream-filtered",
+    "wheat_ast_audit": "passed-dev3-four-field-crop-stage",
+    "native_build": "passed-dev3-offline",
+    "native_runtime_tests": "9-passed-159-upstream-filtered-dev2;dev3-not-run",
     "game_launch": "passed",
     "foundation_smoke_test": "passed-default-integrated-server",
     "disabled_after_process_restart": "passed-foundation-and-wheat-dev2",
-    "gameplay": "partial",
-    "ordinary_loot_comparison": "passed-4-tools-16-paired-crops",
-    "controlled_nonempty_seedless_loot": "passed",
-    "nearby_ground_seed_exclusion": "passed",
-    "saved_ground_loot": "passed",
-    "ordinary_berry_harvesting": "passed-bush-and-glow-vine",
-    "disabled_ordinary_actions": "passed-observed-single-player-cases"
+    "gameplay": "partial-dev3",
+    "field_crop_batch": "passed-dev3-24-checks-default-integrated-server",
+    "ordinary_loot_comparison": "passed-wheat-dev2-4-tools-16-paired-crops",
+    "controlled_nonempty_seedless_loot": "passed-wheat-dev2",
+    "nearby_ground_seed_exclusion": "passed-wheat-dev2",
+    "saved_ground_loot": "passed-wheat-dev2",
+    "ordinary_berry_harvesting": "passed-bush-and-glow-vine-dev2",
+    "disabled_ordinary_actions": "passed-observed-single-player-cases-dev2"
   }
 }

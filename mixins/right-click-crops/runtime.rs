@@ -3,10 +3,27 @@ use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.2";
-pub const MOD_DESCRIPTION: &str = "Survival wheat harvesting. Restart the game after toggling.";
-pub const SEED: &str = "minecraft:wheat_seeds";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Wheat prototype active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.3";
+pub const MOD_DESCRIPTION: &str = "Survival wheat, carrot, potato and beetroot harvesting. Restart after toggling.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Four field crops active; toggles require a full game restart.";
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Crop {
+    pub mature_age: &'static str,
+    pub planting_item: &'static str,
+}
+
+// Explicit profiles, not every block with an age property.
+pub fn crop_profile(block: &str) -> Option<Crop> {
+    let (mature_age, planting_item) = match block {
+        "minecraft:wheat" => ("7", "minecraft:wheat_seeds"),
+        "minecraft:carrots" => ("7", "minecraft:carrot"),
+        "minecraft:potatoes" => ("7", "minecraft:potato"),
+        "minecraft:beetroots" => ("3", "minecraft:beetroot_seeds"),
+        _ => return None,
+    };
+    Some(Crop { mature_age, planting_item })
+}
 
 static ENABLED: OnceLock<bool> = OnceLock::new();
 static STARTUP_REPORTED: AtomicBool = AtomicBool::new(false);
@@ -34,17 +51,18 @@ pub enum Payment {
     None,
 }
 
-pub fn is_seed(stack: &impl SeedStack) -> bool {
-    stack.item() == SEED && stack.count() > 0
+pub fn is_seed(stack: &impl SeedStack, planting_item: &str) -> bool {
+    stack.item() == planting_item && stack.count() > 0
 }
 
 pub fn select_payment<'a, S: SeedStack + 'a>(
+    planting_item: &str,
     loot: &[S],
     inventory: impl IntoIterator<Item = (usize, &'a S)>,
 ) -> Payment {
-    if let Some(index) = loot.iter().position(is_seed) {
+    if let Some(index) = loot.iter().position(|s| is_seed(s, planting_item)) {
         Payment::Loot(index)
-    } else if let Some((slot, _)) = inventory.into_iter().find(|(_, stack)| is_seed(*stack)) {
+    } else if let Some((slot, _)) = inventory.into_iter().find(|(_, stack)| is_seed(*stack, planting_item)) {
         Payment::Inventory(slot)
     } else {
         Payment::None
@@ -52,8 +70,8 @@ pub fn select_payment<'a, S: SeedStack + 'a>(
 }
 
 // Called only after the world transition succeeds. Selection guarantees a seed.
-pub fn spend_one<S: SeedStack>(slot: &mut Option<S>) {
-    if let Some(stack) = slot.as_mut().filter(|s| is_seed(*s)) {
+pub fn spend_one<S: SeedStack>(slot: &mut Option<S>, planting_item: &str) {
+    if let Some(stack) = slot.as_mut().filter(|s| is_seed(*s, planting_item)) {
         *stack.count_mut() -= 1;
         if stack.count() == 0 {
             *slot = None;
@@ -64,6 +82,8 @@ pub fn spend_one<S: SeedStack>(slot: &mut Option<S>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    const SEED: &str = "minecraft:wheat_seeds";
 
     #[derive(Clone, Debug, PartialEq)]
     struct Stack(&'static str, u32);
@@ -79,9 +99,9 @@ mod tests {
     fn loot_precedes_inventory_and_charges_exactly_one() {
         let loot = vec![Stack("minecraft:wheat", 1), seeds(3), seeds(2)];
         let inventory = [seeds(10)];
-        assert_eq!(select_payment(&loot, inventory.iter().enumerate()), Payment::Loot(1));
+        assert_eq!(select_payment(SEED, &loot, inventory.iter().enumerate()), Payment::Loot(1));
         let mut paid = Some(loot[1].clone());
-        spend_one(&mut paid);
+        spend_one(&mut paid, SEED);
         assert_eq!(paid, Some(seeds(2)));
         assert_eq!(inventory[0], seeds(10));
     }
@@ -89,7 +109,7 @@ mod tests {
     #[test]
     fn one_loot_seed_leaves_no_ground_seed() {
         let mut slot = Some(seeds(1));
-        spend_one(&mut slot);
+        spend_one(&mut slot, SEED);
         assert_eq!(slot, None);
     }
 
@@ -97,8 +117,8 @@ mod tests {
     fn inventory_fallback_keeps_all_loot() {
         let loot = [Stack("minecraft:wheat", 1)];
         let mut inventory = [Some(seeds(2))];
-        assert_eq!(select_payment(&loot, inventory.iter().enumerate().filter_map(|(i,s)| s.as_ref().map(|s| (i,s)))), Payment::Inventory(0));
-        spend_one(&mut inventory[0]);
+        assert_eq!(select_payment(SEED, &loot, inventory.iter().enumerate().filter_map(|(i,s)| s.as_ref().map(|s| (i,s)))), Payment::Inventory(0));
+        spend_one(&mut inventory[0], SEED);
         assert_eq!(inventory, [Some(seeds(1))]);
         assert_eq!(loot, [Stack("minecraft:wheat", 1)]);
     }
@@ -106,8 +126,8 @@ mod tests {
     #[test]
     fn empty_loot_can_use_the_last_offhand_seed() {
         let mut offhand = Some(seeds(1));
-        assert_eq!(select_payment(&[], [(40, offhand.as_ref().unwrap())]), Payment::Inventory(40));
-        spend_one(&mut offhand);
+        assert_eq!(select_payment(SEED, &[], [(40, offhand.as_ref().unwrap())]), Payment::Inventory(40));
+        spend_one(&mut offhand, SEED);
         assert_eq!(offhand, None);
     }
 
@@ -115,8 +135,8 @@ mod tests {
     fn wrong_items_and_zero_counts_do_not_pay() {
         let loot = [Stack("minecraft:beetroot_seeds", 8), seeds(0)];
         let inventory = [Stack("minecraft:wheat", 1), seeds(0)];
-        assert_eq!(select_payment(&loot, inventory.iter().enumerate()), Payment::None);
-        assert_eq!(select_payment::<Stack>(&[], []), Payment::None);
+        assert_eq!(select_payment(SEED, &loot, inventory.iter().enumerate()), Payment::None);
+        assert_eq!(select_payment::<Stack>(SEED, &[], []), Payment::None);
     }
 
     #[test]
@@ -124,7 +144,7 @@ mod tests {
         let loot = [Stack("minecraft:wheat", 1)];
         let inventory = [seeds(1)];
         let before = (loot.clone(), inventory.clone());
-        let _planned = select_payment(&loot, inventory.iter().enumerate());
+        let _planned = select_payment(SEED, &loot, inventory.iter().enumerate());
         // An adapter that cannot commit must not call spend_one or spawn loot.
         assert_eq!((loot, inventory), before);
     }
@@ -132,14 +152,14 @@ mod tests {
     #[test]
     fn deterministic_first_positive_seed_stack() {
         let inventory = [(8, seeds(0)), (12, seeds(2)), (40, seeds(5))];
-        assert_eq!(select_payment(&[], inventory.iter().map(|(i,s)| (*i,s))), Payment::Inventory(12));
+        assert_eq!(select_payment(SEED, &[], inventory.iter().map(|(i,s)| (*i,s))), Payment::Inventory(12));
     }
 
     #[test]
     fn spending_never_underflows_or_charges_wrong_items() {
         for stack in [seeds(0), Stack("minecraft:beetroot_seeds", 1)] {
             let mut slot = Some(stack.clone());
-            spend_one(&mut slot);
+            spend_one(&mut slot, SEED);
             assert_eq!(slot, Some(stack));
         }
     }
@@ -150,6 +170,43 @@ mod tests {
             let setting = OnceLock::new();
             assert_eq!(*setting.get_or_init(|| first), first);
             assert_eq!(*setting.get_or_init(|| !first), first);
+        }
+    }
+
+    #[test]
+    fn field_profiles_have_exact_maturity_and_planting_items() {
+        for (block, age, item) in [
+            ("minecraft:wheat", "7", SEED),
+            ("minecraft:carrots", "7", "minecraft:carrot"),
+            ("minecraft:potatoes", "7", "minecraft:potato"),
+            ("minecraft:beetroots", "3", "minecraft:beetroot_seeds"),
+        ] {
+            assert_eq!(crop_profile(block), Some(Crop { mature_age: age, planting_item: item }));
+        }
+        for block in ["minecraft:nether_wart", "minecraft:cocoa", "minecraft:torchflower", "minecraft:sweet_berry_bush", "minecraft:air"] {
+            assert_eq!(crop_profile(block), None);
+        }
+    }
+
+    #[test]
+    fn every_profile_pays_only_its_own_item_and_prefers_loot() {
+        let items = [SEED, "minecraft:carrot", "minecraft:potato", "minecraft:beetroot_seeds"];
+        for item in items {
+            let loot = [Stack(item, 2)];
+            let inventory = [Stack(item, 4)];
+            assert_eq!(select_payment(item, &loot, inventory.iter().enumerate()), Payment::Loot(0));
+            assert_eq!(select_payment(item, &[], inventory.iter().enumerate()), Payment::Inventory(0));
+            let mut last = Some(Stack(item, 1));
+            spend_one(&mut last, item);
+            assert_eq!(last, None);
+            for wrong in items.into_iter().chain(["minecraft:poisonous_potato", "minecraft:beetroot"]) {
+                if wrong == item { continue; }
+                let wrong_loot = [Stack(wrong, 3), Stack(item, 0)];
+                assert_eq!(select_payment(item, &wrong_loot, [(40, &wrong_loot[0])]), Payment::None);
+                let mut slot = Some(Stack(wrong, 3));
+                spend_one(&mut slot, item);
+                assert_eq!(slot, Some(Stack(wrong, 3)));
+            }
         }
     }
 }
