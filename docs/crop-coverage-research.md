@@ -42,9 +42,9 @@ All behavior in this table is **proposed**, except the explicitly labelled exist
 | Sugar cane | Harvest growth above a retained base in one targeted column | Keep the living base/support and water; no planting debit if no replant occurs | Implemented; partial dev.6 group validation |
 | Cactus | Harvest growth above a retained base in one targeted column | Keep base and sand; handle any cactus flower through ordinary updates | Implemented; partial dev.6 group validation; flower pending |
 | Bamboo | Harvest growth above a retained base in one targeted column | Keep viable base; distinguish shoot/stalk; no age-based fake maturity | Implemented; partial dev.6 group validation |
-| Kelp | Harvest one connected plant while retaining its base | Preserve water and a viable kelp growth state | Special-rule candidate; exact reference behavior not established |
-| Twisting vines | Harvest one connected vine while retaining its rooted portion | Preserve the correct grounded end and head/body transitions | Special-rule candidate; no specific reference support verified |
-| Weeping vines | Harvest one connected hanging vine while retaining its attachment | Preserve the ceiling-side anchor, not an arbitrary lowest block | Special-rule candidate; no specific reference support verified |
+| Kelp | Harvest one connected plant while retaining its base | Preserve water and a viable kelp growth state | Implemented; partial dev.7 group validation |
+| Twisting vines | Harvest one connected vine while retaining its rooted portion | Preserve the correct grounded end and head/body transitions | Implemented; partial dev.7 group validation |
+| Weeping vines | Harvest one connected hanging vine while retaining its attachment | Preserve the ceiling-side anchor, not an arbitrary lowest block | Implemented; partial dev.7 group validation |
 | Pumpkin | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary shears/carving | Special-rule candidate; farm-grown versus placed decorative fruit needs a rule |
 | Melon | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary tool/Fortune/Silk Touch loot | Special-rule candidate; no fixed slice count |
 | Sweet berries | Leave the ordinary right-click harvest in control | No extra seed payment, no second loot calculation | Ordinary bush harvest tested with mod enabled |

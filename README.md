@@ -14,6 +14,8 @@ Version `0.1.0-dev.5` adds farm-grown torchflowers and two-block pitcher crops. 
 
 Version `0.1.0-dev.6` begins retained-base vertical plants with sugar cane, cactus and bamboo. See the [group validation record](docs/vertical-plant-validation.md); implementation status does not imply completed game support.
 
+Version `0.1.0-dev.7` extends the directed retained-anchor path to kelp, twisting vines and downward-growing weeping vines. See the [separate validation record](docs/kelp-vine-validation.md).
+
 The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and plants outside the eight explicit crop profiles remain unchanged.
 
 Additional isolated checks compare four tool cases, including Fortune III, against the ordinary game; all 16 paired crops preserved ordinary loot minus exactly one seed per replant. Nonempty seedless loot was checked with a separately authored test-only resource fixture, not by changing ordinary installed loot or the mod's runtime tables. See the validation record for scope, raw-evidence locations and remaining acceptance work.

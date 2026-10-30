@@ -3,9 +3,9 @@ use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.6";
-pub const MOD_DESCRIPTION: &str = "Survival harvesting for crops and three vertical plants. Restart after toggling.";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Eleven plant families active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.7";
+pub const MOD_DESCRIPTION: &str = "Survival harvesting for crops and six vertical plants. Restart after toggling.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Fourteen plant families active; toggles require a full game restart.";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crop {
@@ -33,13 +33,28 @@ pub fn crop_profile(block: &str) -> Option<Crop> {
     Some(Crop { mature_age, planting_item, support_below, initial_block, two_blocks })
 }
 
-pub fn column_item(block: &str) -> Option<&'static str> {
-    match block {
-        "minecraft:sugar_cane" => Some("minecraft:sugar_cane"),
-        "minecraft:cactus" => Some("minecraft:cactus"),
-        "minecraft:bamboo" => Some("minecraft:bamboo"),
-        _ => None,
-    }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct VerticalPlant {
+    pub head: &'static str,
+    pub body: &'static str,
+    pub growth_y: i32,
+}
+
+pub fn vertical_profile(block: &str) -> Option<VerticalPlant> {
+    let profile = match block {
+        "minecraft:sugar_cane" => VerticalPlant { head: "minecraft:sugar_cane", body: "minecraft:sugar_cane", growth_y: 1 },
+        "minecraft:cactus" => VerticalPlant { head: "minecraft:cactus", body: "minecraft:cactus", growth_y: 1 },
+        "minecraft:bamboo" => VerticalPlant { head: "minecraft:bamboo", body: "minecraft:bamboo", growth_y: 1 },
+        "minecraft:kelp" | "minecraft:kelp_plant" => VerticalPlant { head: "minecraft:kelp", body: "minecraft:kelp_plant", growth_y: 1 },
+        "minecraft:twisting_vines" | "minecraft:twisting_vines_plant" => VerticalPlant { head: "minecraft:twisting_vines", body: "minecraft:twisting_vines_plant", growth_y: 1 },
+        "minecraft:weeping_vines" | "minecraft:weeping_vines_plant" => VerticalPlant { head: "minecraft:weeping_vines", body: "minecraft:weeping_vines_plant", growth_y: -1 },
+        _ => return None,
+    };
+    Some(profile)
+}
+
+pub fn same_vertical_plant(block: &str, profile: VerticalPlant) -> bool {
+    block == profile.head || block == profile.body
 }
 
 static ENABLED: OnceLock<bool> = OnceLock::new();
@@ -232,13 +247,25 @@ mod tests {
     }
 
     #[test]
-    fn vertical_profiles_are_explicit_and_need_no_planting_payment() {
+    fn vertical_profiles_are_explicit_directed_and_need_no_planting_payment() {
         for name in ["minecraft:sugar_cane", "minecraft:cactus", "minecraft:bamboo"] {
-            assert_eq!(column_item(name), Some(name));
+            let profile = vertical_profile(name).unwrap();
+            assert_eq!(profile, VerticalPlant { head: name, body: name, growth_y: 1 });
             assert_eq!(crop_profile(name), None);
         }
-        for name in ["minecraft:bamboo_sapling", "minecraft:kelp", "minecraft:twisting_vines"] {
-            assert_eq!(column_item(name), None);
+        for (head, body, growth_y) in [
+            ("minecraft:kelp", "minecraft:kelp_plant", 1),
+            ("minecraft:twisting_vines", "minecraft:twisting_vines_plant", 1),
+            ("minecraft:weeping_vines", "minecraft:weeping_vines_plant", -1),
+        ] {
+            let expected = VerticalPlant { head, body, growth_y };
+            assert_eq!(vertical_profile(head), Some(expected));
+            assert_eq!(vertical_profile(body), Some(expected));
+            assert!(same_vertical_plant(head, expected));
+            assert!(same_vertical_plant(body, expected));
+        }
+        for name in ["minecraft:bamboo_sapling", "minecraft:cave_vines", "minecraft:vine"] {
+            assert_eq!(vertical_profile(name), None);
         }
     }
 }

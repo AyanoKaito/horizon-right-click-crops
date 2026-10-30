@@ -43,17 +43,19 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
     }
     let clicked_state = game.world.block(hit.pos[0], hit.pos[1], hit.pos[2]);
     let clicked_name = game.res.facts().get(clicked_state).name.clone();
-    if core::column_item(&clicked_name).is_some() {
-        let mut base_y = hit.pos[1];
-        while base_y > hit.pos[1] - 32 {
-            let below = game.world.block(hit.pos[0], base_y - 1, hit.pos[2]);
-            if game.res.facts().get(below).name != clicked_name { break; }
-            base_y -= 1;
+    if let Some(profile) = core::vertical_profile(&clicked_name) {
+        let mut anchor_y = hit.pos[1];
+        for _ in 0..32 {
+            let support_y = anchor_y - profile.growth_y;
+            let support = game.world.block(hit.pos[0], support_y, hit.pos[2]);
+            if !core::same_vertical_plant(&game.res.facts().get(support).name, profile) { break; }
+            anchor_y = support_y;
         }
         let mut blocks = Vec::new();
-        for y in base_y + 1..=base_y + 32 {
+        for distance in 1..=32 {
+            let y = anchor_y + profile.growth_y * distance;
             let state = game.world.block(hit.pos[0], y, hit.pos[2]);
-            if game.res.facts().get(state).name != clicked_name { break; }
+            if !core::same_vertical_plant(&game.res.facts().get(state).name, profile) { break; }
             blocks.push(([hit.pos[0], y, hit.pos[2]], state));
         }
         if !blocks.is_empty() { return Some(Target::Column(ColumnTarget { blocks })); }
