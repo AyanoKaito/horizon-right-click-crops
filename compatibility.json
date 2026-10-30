@@ -1,5 +1,5 @@
 {
-  "status": "stem-fruits-partially-gameplay-tested",
+  "status": "approved-families-partially-gameplay-tested",
   "horizon_repository": "https://github.com/horizon-rust/horizon",
   "horizon_revision": "64e298952d8bbb1188108bd4de68be2ab25d202b",
   "horizon_source_tag": "nightly-source/2026-10-29-64e2989",
@@ -20,7 +20,8 @@
     "game_launch": "passed",
     "foundation_smoke_test": "passed-default-integrated-server",
     "disabled_after_process_restart": "passed-foundation-and-wheat-dev2",
-    "gameplay": "partial-dev8",
+    "gameplay": "partial-dev8-18-approved-families",
+    "berry_preservation_batch": "passed-dev8-7-checks-default-integrated-server",
     "stem_fruit_batch": "passed-dev8-10-checks-default-integrated-server",
     "kelp_vine_batch": "passed-dev7-13-checks-default-integrated-server",
     "vertical_plant_batch": "passed-dev6-13-checks-default-integrated-server",

@@ -41,9 +41,9 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
         self.assertIn(
             self.compatibility["status"],
-            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested", "vertical-plants-implementation-in-progress", "vertical-plants-partially-gameplay-tested", "kelp-vines-implementation-in-progress", "kelp-vines-partially-gameplay-tested", "stem-fruits-implementation-in-progress", "stem-fruits-partially-gameplay-tested"},
+            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested", "vertical-plants-implementation-in-progress", "vertical-plants-partially-gameplay-tested", "kelp-vines-implementation-in-progress", "kelp-vines-partially-gameplay-tested", "stem-fruits-implementation-in-progress", "stem-fruits-partially-gameplay-tested", "approved-families-partially-gameplay-tested"},
         )
-        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5", "not-run-dev6;flower-crops-partial-dev5", "partial-dev6", "not-run-dev7;vertical-plants-partial-dev6", "partial-dev7", "not-run-dev8;kelp-vines-partial-dev7", "partial-dev8"})
+        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5", "not-run-dev6;flower-crops-partial-dev5", "partial-dev6", "not-run-dev7;vertical-plants-partial-dev6", "partial-dev7", "not-run-dev8;kelp-vines-partial-dev7", "partial-dev8", "partial-dev8-18-approved-families"})
         if self.compatibility["status"] in {"wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested"}:
             self.assertTrue(self.compatibility["validation"]["native_build"].startswith("passed"))
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed")
@@ -72,6 +72,10 @@ class FoundationSourceTests(unittest.TestCase):
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev7-fourteen-family-stage")
             self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev7-offline")
         if self.compatibility["status"] == "stem-fruits-partially-gameplay-tested":
+            self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "13-passed-dev8")
+            self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev8-sixteen-family-stage")
+            self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev8-offline")
+        if self.compatibility["status"] == "approved-families-partially-gameplay-tested":
             self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "13-passed-dev8")
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev8-sixteen-family-stage")
             self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev8-offline")

@@ -18,6 +18,8 @@ Version `0.1.0-dev.7` extends the directed retained-anchor adapter to kelp, twis
 
 Version `0.1.0-dev.8` adds associated pumpkin and melon fruit while preserving stems and ordinary pumpkin carving. Its [group validation](stem-fruit-validation.md) passed 10 final checks, 13 standalone Rust tests, 25 Python tests and the staged-source audit. The game batch covered decorative exclusion, drops-off behavior and accelerated fruit/stem reattachment. Four partial runs corrected only fixture sightlines and required no native rebuild.
 
+The same final `dev.8` native build received a separate [berry preservation check](berry-validation.md): seven checks confirmed ordinary sweet/glow berry harvest, empty repeats, bone meal and a wheat regression. No source change or native rebuild was required. All 18 approved plant families now have group-scoped implementation or preservation evidence; this is still partial single-player validation, not public-release acceptance.
+
 ## Foundation and preparation history
 
 The harmless `dev.1` native foundation compiled against the pinned Horizon source on Windows, and its four tests passed both standalone and inside the game test binary. A separately approved isolated default-server-thread smoke test also passed, including the mod row, survival block-use logging, and disabling across a process restart. The test games were closed. At that stage, there was no harvesting implementation or release `.hnmod`; foundation checks were not harvest acceptance.

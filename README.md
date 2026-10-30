@@ -18,6 +18,8 @@ Version `0.1.0-dev.7` extends the directed retained-anchor path to kelp, twistin
 
 Version `0.1.0-dev.8` adds stem-associated pumpkin and melon fruit without seed payment, while preserving ordinary pumpkin carving. See the [group validation record](docs/stem-fruit-validation.md).
 
+Sweet berry bushes and glow berries remain ordinary Horizon interactions rather than separate mod targets. Their [final-stage preservation record](docs/berry-validation.md) completes grouped checks for the 18 approved families.
+
 The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and plants outside the eight explicit crop profiles remain unchanged.
 
 Additional isolated checks compare four tool cases, including Fortune III, against the ordinary game; all 16 paired crops preserved ordinary loot minus exactly one seed per replant. Nonempty seedless loot was checked with a separately authored test-only resource fixture, not by changing ordinary installed loot or the mod's runtime tables. See the validation record for scope, raw-evidence locations and remaining acceptance work.

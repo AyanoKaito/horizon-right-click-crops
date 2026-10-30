@@ -47,8 +47,8 @@ All behavior in this table is **proposed**, except the explicitly labelled exist
 | Weeping vines | Harvest one connected hanging vine while retaining its attachment | Preserve the ceiling-side anchor, not an arbitrary lowest block | Implemented; partial dev.7 group validation |
 | Pumpkin | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary shears/carving | Implemented; partial dev.8 group validation |
 | Melon | Harvest the actual fruit while retaining its growing stem | No seed debit if the stem remains; preserve ordinary tool/Fortune/Silk Touch loot | Implemented; partial dev.8 group validation |
-| Sweet berries | Leave the ordinary right-click harvest in control | No extra seed payment, no second loot calculation | Ordinary bush harvest tested with mod enabled |
-| Glow berries | Leave the ordinary right-click harvest in control | Keep vine and ordinary berry flag changes; no extra payment/drop | Ordinary cave-vine harvest tested with mod enabled |
+| Sweet berries | Leave the ordinary right-click harvest in control | No extra seed payment, no second loot calculation | Preserved; partial dev.8 final-stage validation |
+| Glow berries | Leave the ordinary right-click harvest in control | Keep vine and ordinary berry flag changes; no extra payment/drop | Preserved; partial dev.8 final-stage validation |
 
 For the first eight paid-replant rows, the approved rule remains: reserve exactly one correct planting item from generated loot first, otherwise from the acting player's ordinary inventory, otherwise harvest without replanting. Preserving an already-living base/stem is **not** a free replant and must not charge a fictitious planting item. That distinction is a proposal to review, not an unnoticed change to the current wheat implementation.
 
