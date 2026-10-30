@@ -10,7 +10,7 @@ The user corrected the proposed sequencing: wheat is a prototype, not the whole 
 
 - Read public project descriptions, user documentation and the Minecraft crop index. No third-party gameplay implementation was inspected, copied, translated or ported.
 - A reference project's broad statement such as "all vanilla crops" is not a verified per-plant support list. Named examples are distinguished from broad claims below.
-- Minecraft Java reference-mod compatibility is not Horizon compatibility. Current native evidence covers wheat harvesting and ordinary berry/carrot passthrough only; other rows below need implementation or explicit ordinary-behavior tests.
+- Minecraft Java reference-mod compatibility is not Horizon compatibility. Current native evidence covers wheat and the three additional field crops in separate validation records; wart/cocoa game checks are pending and other rows still need implementation or explicit ordinary-behavior tests.
 - The proposed main list has **18 plant families**, not 18 block ids. Upper/lower halves, heads/bodies and fruit/stem pairs can need several ids for one family. More unusual flora is inventoried separately instead of hidden behind an "all plants" promise.
 
 ## What comparable projects document
@@ -32,11 +32,11 @@ All behavior in this table is **proposed**, except the explicitly labelled exist
 | Plant family | Proposed operation | Planting resource / structure to preserve | Current evidence |
 | --- | --- | --- | --- |
 | Wheat | Mature crop to initial growth stage | One wheat seed; same farmland | Implemented and partially accepted in the wheat validation record |
-| Carrots | Mature crop to initial growth stage | One carrot; same farmland | No mod harvesting yet; ordinary passthrough observed |
-| Potatoes | Mature crop to initial growth stage | One normal potato, never a poisonous potato | Candidate only |
-| Beetroot | Mature crop to initial growth stage | One beetroot seed, not beetroot | Candidate only |
-| Nether wart | Mature wart to initial stage | One nether wart; preserve soul sand | Candidate; explicitly named in reference documentation |
-| Cocoa | Mature pod to initial stage | One cocoa bean; preserve facing and supporting jungle log | Candidate; explicitly named in reference documentation |
+| Carrots | Mature crop to initial growth stage | One carrot; same farmland | Implemented; partial dev.3 group validation |
+| Potatoes | Mature crop to initial growth stage | One normal potato, never a poisonous potato | Implemented; partial dev.3 group validation |
+| Beetroot | Mature crop to initial growth stage | One beetroot seed, not beetroot | Implemented; partial dev.3 group validation |
+| Nether wart | Mature wart to initial stage | One nether wart; preserve soul sand | Implemented; partial dev.4 group validation |
+| Cocoa | Mature pod to initial stage | One cocoa bean; preserve facing and supporting jungle log | Implemented; partial dev.4 group validation |
 | Torchflower | Mature field-grown flower to initial crop block | One torchflower seed; never invent a seed from the flower item | Candidate; needs distinct mature/crop ids and a field-versus-decoration rule |
 | Pitcher crop | Mature two-block crop to one initial crop | One pitcher pod; recognize either clicked half, no duplicate upper-half loot | Candidate; decorative pitcher plant must not be confused with planted crop |
 | Sugar cane | Harvest growth above a retained base in one targeted column | Keep the living base/support and water; no planting debit if no replant occurs | Special-rule candidate; explicitly named by RightClickHarvest |

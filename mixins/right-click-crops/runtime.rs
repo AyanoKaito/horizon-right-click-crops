@@ -3,26 +3,30 @@ use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.3";
-pub const MOD_DESCRIPTION: &str = "Survival wheat, carrot, potato and beetroot harvesting. Restart after toggling.";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Four field crops active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.4";
+pub const MOD_DESCRIPTION: &str = "Survival field crops, nether wart and cocoa. Restart after toggling.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Six crops active; toggles require a full game restart.";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crop {
     pub mature_age: &'static str,
     pub planting_item: &'static str,
+    // Cocoa uses the game's direction-sensitive survival check instead.
+    pub support_below: Option<&'static str>,
 }
 
 // Explicit profiles, not every block with an age property.
 pub fn crop_profile(block: &str) -> Option<Crop> {
-    let (mature_age, planting_item) = match block {
-        "minecraft:wheat" => ("7", "minecraft:wheat_seeds"),
-        "minecraft:carrots" => ("7", "minecraft:carrot"),
-        "minecraft:potatoes" => ("7", "minecraft:potato"),
-        "minecraft:beetroots" => ("3", "minecraft:beetroot_seeds"),
+    let (mature_age, planting_item, support_below) = match block {
+        "minecraft:wheat" => ("7", "minecraft:wheat_seeds", Some("minecraft:farmland")),
+        "minecraft:carrots" => ("7", "minecraft:carrot", Some("minecraft:farmland")),
+        "minecraft:potatoes" => ("7", "minecraft:potato", Some("minecraft:farmland")),
+        "minecraft:beetroots" => ("3", "minecraft:beetroot_seeds", Some("minecraft:farmland")),
+        "minecraft:nether_wart" => ("3", "minecraft:nether_wart", Some("minecraft:soul_sand")),
+        "minecraft:cocoa" => ("2", "minecraft:cocoa_beans", None),
         _ => return None,
     };
-    Some(Crop { mature_age, planting_item })
+    Some(Crop { mature_age, planting_item, support_below })
 }
 
 static ENABLED: OnceLock<bool> = OnceLock::new();
@@ -175,22 +179,24 @@ mod tests {
 
     #[test]
     fn field_profiles_have_exact_maturity_and_planting_items() {
-        for (block, age, item) in [
-            ("minecraft:wheat", "7", SEED),
-            ("minecraft:carrots", "7", "minecraft:carrot"),
-            ("minecraft:potatoes", "7", "minecraft:potato"),
-            ("minecraft:beetroots", "3", "minecraft:beetroot_seeds"),
+        for (block, age, item, support) in [
+            ("minecraft:wheat", "7", SEED, Some("minecraft:farmland")),
+            ("minecraft:carrots", "7", "minecraft:carrot", Some("minecraft:farmland")),
+            ("minecraft:potatoes", "7", "minecraft:potato", Some("minecraft:farmland")),
+            ("minecraft:beetroots", "3", "minecraft:beetroot_seeds", Some("minecraft:farmland")),
+            ("minecraft:nether_wart", "3", "minecraft:nether_wart", Some("minecraft:soul_sand")),
+            ("minecraft:cocoa", "2", "minecraft:cocoa_beans", None),
         ] {
-            assert_eq!(crop_profile(block), Some(Crop { mature_age: age, planting_item: item }));
+            assert_eq!(crop_profile(block), Some(Crop { mature_age: age, planting_item: item, support_below: support }));
         }
-        for block in ["minecraft:nether_wart", "minecraft:cocoa", "minecraft:torchflower", "minecraft:sweet_berry_bush", "minecraft:air"] {
+        for block in ["minecraft:torchflower", "minecraft:sweet_berry_bush", "minecraft:air"] {
             assert_eq!(crop_profile(block), None);
         }
     }
 
     #[test]
     fn every_profile_pays_only_its_own_item_and_prefers_loot() {
-        let items = [SEED, "minecraft:carrot", "minecraft:potato", "minecraft:beetroot_seeds"];
+        let items = [SEED, "minecraft:carrot", "minecraft:potato", "minecraft:beetroot_seeds", "minecraft:nether_wart", "minecraft:cocoa_beans"];
         for item in items {
             let loot = [Stack(item, 2)];
             let inventory = [Stack(item, 4)];

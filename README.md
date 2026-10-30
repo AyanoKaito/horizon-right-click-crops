@@ -8,7 +8,9 @@ The earlier [native foundation](docs/native-foundation.md) compiled and passed a
 
 Version `0.1.0-dev.3` extends that same field-crop adapter to carrots, potatoes and beetroot. Its [group validation record](docs/field-crop-validation.md) distinguishes completed checks from unverified behaviors. The [coverage survey](docs/crop-coverage-research.md) lists the approved 18-family implementation scope; it does not imply all families are implemented.
 
-The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and plants outside the four field-crop profiles remain unchanged.
+Version `0.1.0-dev.4` adds nether wart and attached cocoa; see its [separate validation record](docs/wart-cocoa-validation.md). Both retain the same loot-first payment rule, while wart keeps soul sand and cocoa keeps its facing and attachment. Version-specific test results are documented separately; earlier wheat or field-crop checks are not silently relabelled as new evidence.
+
+The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and plants outside the six explicit crop profiles remain unchanged.
 
 Additional isolated checks compare four tool cases, including Fortune III, against the ordinary game; all 16 paired crops preserved ordinary loot minus exactly one seed per replant. Nonempty seedless loot was checked with a separately authored test-only resource fixture, not by changing ordinary installed loot or the mod's runtime tables. See the validation record for scope, raw-evidence locations and remaining acceptance work.
 
@@ -16,7 +18,7 @@ Additional isolated checks compare four tool cases, including Fortune III, again
 
 - Harvest a mature supported crop with right-click, without requiring crouching.
 - Use the game's normal drops: reserve one suitable planting item from the loot first; if none drops, consume one from the player's inventory when available.
-- Drop the remaining loot on the ground. If neither source provides a planting item, harvest without replanting and leave the farmland empty.
+- Drop the remaining loot on the ground. If neither source provides a planting item, harvest without replanting and leave the support unchanged.
 - Hold right-click and aim at successive mature plants to harvest them through normal repeated interactions, one plant at a time, not in an area.
 - Leave bone meal interactions to the game's normal behavior.
 - Preserve normal growth, the farmland below, left-click removal, and unrelated interactions.

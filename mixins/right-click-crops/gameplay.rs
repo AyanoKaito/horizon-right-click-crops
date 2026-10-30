@@ -57,7 +57,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
     let Some(young) = game.with_props(state, &[("age", "0")]) else { return Ok(true); };
     // Reject unsupported ground before loot/RNG, inventory or world effects.
     if !game.border.contains(f64::from(pos[0]), f64::from(pos[2]))
-        || &*game.res.facts().get(game.world.block(pos[0], pos[1] - 1, pos[2])).name != "minecraft:farmland"
+        || crop.support_below.is_some_and(|support| &*game.res.facts().get(game.world.block(pos[0], pos[1] - 1, pos[2])).name != support)
         || !game.with_level(|b, level, ticks| b.can_survive(level, ticks, at, young))
     {
         return Ok(true);
@@ -71,7 +71,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
     let slots = (0..36).chain(std::iter::once(super::shield::OFFHAND_SLOT));
     let payment = core::select_payment(crop.planting_item, &loot, slots.filter_map(|slot| game.stack_in(slot).map(|s| (slot, s))));
     let after = if payment == core::Payment::None { BlockStateId(0) } else { young };
-    // These field crops have no block entity or pre-remove effects.
+    // These six plants have no block entity or pre-remove effects.
     // On this thread no other player can alter the target between check and write.
     let written = game.with_level(|b, level, ticks| {
         b.set_block(level, ticks, at, after, UPDATE_ALL)
