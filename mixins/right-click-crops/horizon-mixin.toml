@@ -1,0 +1,59 @@
+[mod]
+id = "right-click-crops"
+version = "0.1.0-dev.2"
+priority = 100
+
+[compatibility]
+horizon_revision = "64e298952d8bbb1188108bd4de68be2ab25d202b"
+
+[[module]]
+id = "foundation-runtime"
+file = "crates/horizon-client/src/game.rs"
+name = "right_click_crops"
+source = "runtime.rs"
+
+[[module]]
+id = "wheat-gameplay"
+file = "crates/horizon-client/src/game.rs"
+name = "right_click_crops_gameplay"
+source = "gameplay.rs"
+
+[[injection]]
+id = "register-foundation"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper = "register.rs"
+bindings = [
+  { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "mods" },
+]
+
+[[injection]]
+id = "report-foundation-start"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_tick"
+helper = "startup.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+]
+
+[[injection]]
+id = "harvest-wheat"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::Game<'_>::use_hand"
+helper = "use_hand.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "block_hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[injection]]
+id = "consume-local-wheat-click"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::remote::Game<'_>::remote_block_reacts"
+helper = "client_reacts.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "hit", ty = "&crate::game::Hit", value = "hit" },
+]

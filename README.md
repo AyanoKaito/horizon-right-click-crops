@@ -2,7 +2,13 @@
 
 An independent, work-in-progress Horizon mod for harvesting mature crops with right-click and replanting when a suitable planting item is available in the drops or the player's inventory.
 
-**Preparation stage only. No playable mod or release is available yet.**
+**Compiled survival wheat prototype with partial game verification. Not a public release or fully accepted build.**
+
+The earlier [native foundation](docs/native-foundation.md) compiled and passed an isolated smoke test. Version `0.1.0-dev.2` adds the survival wheat implementation: ground loot, one seed from loot first or inventory second, and no replant when neither can pay. See the [integration contract](specs/001-wheat-harvest/contracts.md) and [wheat validation record](docs/wheat-validation.md) for actual progress and limitations. Foundation results alone do not validate harvesting.
+
+The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the native mod; live toggling is not implemented. Other game modes and crops remain unchanged.
+
+Additional isolated checks compare four tool cases, including Fortune III, against the ordinary game; all 16 paired crops preserved ordinary loot minus exactly one seed per replant. Nonempty seedless loot was checked with a separately authored test-only resource fixture, not by changing ordinary installed loot or the mod's runtime tables. See the validation record for scope, raw-evidence locations and remaining acceptance work.
 
 ## Intended behavior
 

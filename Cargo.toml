@@ -1,0 +1,14 @@
+[package]
+name = "horizon-right-click-crops"
+version = "0.1.0-dev.2"
+edition = "2024"
+rust-version = "1.95"
+description = "Revision-pinned native survival wheat prototype for Horizon"
+publish = false
+
+# The project's own license is pending. Do not publish this package.
+[lib]
+path = "mixins/right-click-crops/runtime.rs"
+
+[lints.rust]
+unsafe_code = "forbid"

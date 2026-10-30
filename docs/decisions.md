@@ -16,14 +16,20 @@
 - 2026-10-29: All Git-tracked and GitHub-facing material, including code and comments, must be English. Conversation and ignored local review files may be Russian. Preserve Russian originals locally; do not rewrite existing Git history without separate approval.
 - 2026-10-29: The user approved the revised wheat specification and explicitly authorized replacing the initial Git history with an English-only root commit on the private repository's `main` branch. Preserve the previous history locally and use an exact force-with-lease guard. This does not authorize future history rewrites or gameplay implementation. GitHub may retain unreachable old objects or cached views after the branch is rewritten.
 - Work in small steps, discuss architecture, and explain technical decisions in plain Russian to the user.
+- 2026-10-29: The user approved the staged technical order and starting with launcher inspection and isolated test-profile preparation. Create a fresh `wheat-prototype` instance without copying ordinary profiles or saves; do not interpret this as approval to download tools, run native builds, or implement gameplay.
+- 2026-10-29: The user approved preparing the harmless foundation files for installed Nightly `64e298952d8bbb1188108bd4de68be2ab25d202b`, without new downloads, compilation, or game launch. Add registration/observation only, with no harvesting. Record Mixins `3f99a5c...` as the explicit unverified source candidate; reuse existing Rust for later approved checks rather than reinstalling it.
+- 2026-10-29: The user subsequently authorized downloading missing pinned source/tool components, compiling the foundation, and running its Rust tests. Reuse installed Rust/MinGW and the existing dependency cache; keep source exports, staging, and build output in ignored project-local directories. Game launch and gameplay implementation are not authorized by this approval.
+- 2026-10-30: After successful compilation, the user separately approved a short isolated foundation game launch to check registration and logs. This covers the foundation smoke test, including disabling and restarting the test game, not harvesting implementation or public release.
+- 2026-10-30: After reviewing the successful foundation, the user said to proceed with wheat harvesting. Implement the approved survival mechanic, reuse the trusted pinned native build, and check it with isolated data. No public release, extra crops, other-mode harvesting or multiplayer compatibility is authorized by this continuation. See the bounded [integration contract](../specs/001-wheat-harvest/contracts.md).
+- 2026-10-30: The user authorized committing and pushing the current prototype, tests and documentation to the existing private `AyanoKaito/horizon-right-click-crops` repository. Exclude all local sources, builds, game resources, saves and credentials; do not rewrite history, make the repository public or create a release.
 
 ## Pending
 
-- Exact Horizon/Mixins revisions and whether to use stable native hook points or direct revision-pinned hooks.
+- The selected pins passed native compilation, isolated survival wheat checks on the integrated server, and two in-frame comparison cases. See [wheat validation](wheat-validation.md) for the exact partial results. Full acceptance, LAN/dedicated and other-mod compatibility remain pending. Further revision changes require agreement.
 - The project's own code license, public presentation, and the date for opening the repository.
 - Open product choices in `requirements.md`, the release crop list, and settings format.
 - Specific external Rust skills: mentioning one does not mean it is installed.
-- Separate acceptance of the draft project principles and agreement on the technical plan. The approved product specification does not by itself authorize implementation.
+- Separate acceptance of the draft project principles and completed prototype acceptance. Wheat implementation was subsequently authorized after the foundation; the approved product specification by itself remains no authorization for new scope.
 
 ## Why not extend the WASM API first?
 

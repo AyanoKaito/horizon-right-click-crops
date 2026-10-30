@@ -2,9 +2,25 @@
 
 ## Current stage
 
-Documentation, Git, and Spec Kit preparation. There is no Rust gameplay code, installed native template, built `.hnmod`, or completed gameplay test. A prepared workspace is not a working mechanic.
+The user authorized actual wheat implementation on 2026-10-30 after the successful foundation smoke test. The source for `0.1.0-dev.2` now includes a standalone-tested payment core and revision-pinned game adapters; native build and gameplay validation are recorded in [wheat-validation.md](wheat-validation.md). Read the [integration contract](../specs/001-wheat-harvest/contracts.md) for current boundaries. The preparation history below describes earlier gates, not a continuing prohibition on this authorized work.
 
-The user approved the revised [wheat prototype specification](../specs/001-wheat-harvest/spec.md), covering held-click behavior, inventory fallback, and the test-setup clarification. Its [requirements quality checklist](../specs/001-wheat-harvest/checklists/requirements.md) records document review, not gameplay test results. No technical plan, implementation tasks, or gameplay implementation is authorized. The ignored local `.specify/feature.json` points to `specs/001-wheat-harvest`.
+The user's subsequent continuation covered additional isolated single-player verification: paired ordinary-game loot comparisons, authoritative Fortune/Silk Touch fixtures, nonempty seedless loot, ground-seed exclusion and item persistence, ordinary berries and restart-disabled actions. No gameplay source change or native rebuild was needed for those additional checks. Twenty-four Python tests now include the standalone observation verifier. Third-party protection/capability work, default-speed growth timing and multiplayer remain separate unverified scope.
+
+## Foundation and preparation history
+
+The harmless `dev.1` native foundation compiled against the pinned Horizon source on Windows, and its four tests passed both standalone and inside the game test binary. A separately approved isolated default-server-thread smoke test also passed, including the mod row, survival block-use logging, and disabling across a process restart. The test games were closed. At that stage, there was no harvesting implementation or release `.hnmod`; foundation checks were not harvest acceptance.
+
+The [harmless `dev.1` native foundation](native-foundation.md) contained a dependency-free standalone library, three non-cancelling hooks, and a shared runtime. It targets Nightly `64e2989` and Mixins `3f99a5c...`; this exact pair passed foundation compilation, not gameplay compatibility testing. See [foundation-only tasks](../specs/001-wheat-harvest/foundation-tasks.md). That earlier version contained no harvesting, loot calculation, inventory payment, or crop mutation.
+
+The user explicitly approved missing source/tool downloads, compilation, and Rust tests, but not game launch. The 15 structural checks, four standalone runtime tests, exact Mixins tool build, real target resolution, pristine-source check, AST audit, and four audit-tool tests passed. The first native compile exposed an incorrect hit type in the observer; it was corrected to `crate::game::Hit`, restaged through Mixins, and re-audited. The repeat native build and all four embedded runtime tests then passed. The other 159 upstream binary tests were filtered out. See [native-validation.md](native-validation.md) for commands, Windows staging limitations, and the local executable receipt.
+
+The user subsequently granted game-launch approval. The smoke test used fresh homes under ignored `.local/runs/`, an explicit read path to already-prepared Nightly resources, and no account/session import. An offscreen game was driven through its own authenticated local control endpoint; control tokens were not printed. Setup used creative commands, then an actual right-click was performed in survival. Full product scenarios and no-cheat/non-OP claims remain untested.
+
+The user approved the revised [wheat prototype specification](../specs/001-wheat-harvest/spec.md), covering held-click behavior, inventory fallback, and the test-setup clarification. Its [requirements quality checklist](../specs/001-wheat-harvest/checklists/requirements.md) records document review, not gameplay test results. The user then authorized technical planning: [plan.md](../specs/001-wheat-harvest/plan.md) began as a proposal, backed by [pinned-source research](../specs/001-wheat-harvest/research.md). At that earlier gate, gameplay implementation had not yet been approved; the later authorization and implementation status are recorded above. The ignored local `.specify/feature.json` points to `specs/001-wheat-harvest`.
+
+The user approved the staged order and proceeding with launcher inspection and an isolated test profile. Launcher CLI version 0.2.26 was confirmed, and the empty `wheat-prototype` instance was created under ignored `.local/wheat-test-environment/`. See [test-environment.md](test-environment.md) for isolation boundaries and actual diagnostics. Exact source/tool pins, downloads, native execution trust, and gameplay implementation remain separate gates; no game/toolchain was installed or built during this preparation.
+
+A subsequent user-authorized read-only inspection confirmed that the ordinary launcher already has Rust/Cargo 1.99.1, MinGW, Mixins `0d6b103...`, dependency/build caches, a ready native build, and the candidate Nightly game/resources. The earlier missing-toolchain observation was scoped to the fresh isolated cache. Do not propose a full redownload without checking actual missing components; first agree on safe reuse of the installed tools/resources while keeping test saves and generated outputs separate.
 
 ## Language and local review
 
@@ -44,7 +60,7 @@ Do not repeat `specify init --force` in an existing clone: infrastructure is alr
 .\.tools\spec-kit\Scripts\specify.exe init --here --force --non-interactive --integration opencode --script ps '--integration-options=--events false'
 ```
 
-The CLI version is pinned, but its complete transitive dependency graph is not locked yet. These are development tools, not the mod's runtime dependencies. Rust dependencies have not been selected.
+The CLI version is pinned, but its complete transitive dependency graph is not locked yet. These are development tools, not the mod's runtime dependencies. The standalone Rust foundation uses only the standard library; its manually prepared lockfile passed an actual locked, offline Cargo test run. The AST audit has a separate development-only lockfile. Integration uses the exact source/tool pins recorded in `compatibility.json`, validated for foundation compilation only, not gameplay compatibility.
 
 ## Test preparation versus test execution
 
@@ -73,7 +89,7 @@ Do not run an automatic whole-mod implementation chain. After preparation, the f
 - A limited staged-content scan found no known key/token patterns; this is not a guarantee that every possible secret is absent.
 - No shell-expansion blocks were found in the ten installed OpenCode commands. During initial installation, no specification or implementation was generated by running those commands.
 
-Gameplay checks have not run: there is no mod code yet. `.specify/memory/constitution.md` remains a draft for separate review.
+At the preparation-only gate, gameplay checks had not run. The later wheat implementation and its partial game verification are recorded in [wheat-validation.md](wheat-validation.md). `.specify/memory/constitution.md` remains a draft for separate review.
 
 ## Before sending changes to GitHub
 
