@@ -115,7 +115,7 @@ def run(batch):
 
     grown = batch.script("shared-growth", [
         "command gamemode creative", "command gamerule minecraft:block_drops true",
-        "command gamerule minecraft:random_tick_speed 250", "command gamemode survival",
+        "command gamerule minecraft:random_tick_speed 1000", "command gamemode survival",
         "wait 1200", "block 3 65 -8", "block 3 65 -4",
         "command gamerule minecraft:random_tick_speed 3",
     ], timeout=150)

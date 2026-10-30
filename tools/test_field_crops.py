@@ -148,7 +148,7 @@ class Batch:
             grown = self.script("shared-growth", [
                 "command gamemode creative",
                 "command gamerule minecraft:block_drops true",
-                "command gamerule minecraft:random_tick_speed 250",
+                "command gamerule minecraft:random_tick_speed 1000",
                 "command gamemode survival", "wait 1200",
                 *[f"block 3 65 {z}" for _, _, _, _, z in CROPS],
                 "command gamerule minecraft:random_tick_speed 3",

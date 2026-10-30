@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from test_field_crops import Batch, check, ground_counts, ground_items
+from test_field_crops import Batch, check, ground_counts
 
 
 PLANTS = (
@@ -20,6 +20,7 @@ def setup(batch, label, plant, support, z, height, drops=True, neighbour=True):
         f"command gamerule minecraft:block_drops {str(drops).lower()}",
         "command gamerule minecraft:random_tick_speed 0",
         f"fill 0 64 {z-2} 8 70 {z+2} minecraft:air --confirm",
+        f"setblock 0 64 {z-1} minecraft:stone --confirm",
         f"setblock 3 64 {z} minecraft:{support} --confirm",
     ]
     if plant == "sugar_cane":
@@ -71,10 +72,12 @@ def run(batch):
         check(ground_counts(ground) == {f"minecraft:{plant}": height - 1}, plant + ": one loot per removed block")
         batch.passed.append(plant + ": retained base, ground loot, no payment, no neighbour harvest")
 
-        before = ground_items(ground)
-        batch.script(plant + "-base-click", [f"look-at-block 3 65 {z}", "mouse right click", "wait 6"])
+        batch.script(plant + "-base-click", [
+            "command kill @e[type=minecraft:item]", f"look-at-block 3 65 {z}",
+            "mouse right click", "wait 6",
+        ])
         again = inspect(batch, plant + "-base-after", plant, support, z, height)
-        check(ground_items(again) == before, plant + ": single base click has no effects")
+        check(not again["entities"], plant + ": single base click has no effects")
         batch.passed.append(plant + ": single retained base passthrough")
 
         setup(batch, plant + "-no-drops", plant, support, z, height, drops=False, neighbour=False)

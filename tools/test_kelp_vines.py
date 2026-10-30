@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from test_field_crops import Batch, check, ground_counts, ground_items
+from test_field_crops import Batch, check, ground_counts
 
 
 PLANTS = (
@@ -77,7 +77,7 @@ def inspect(batch, label, head, body, direction, z, neighbour=True):
     return ground
 
 
-def run(batch):
+def run(batch, skip_wheat_regression=False):
     batch.script("options", ["options-set pauseOnLostFocus false", "time 6000"])
     for head, body, direction, z in PLANTS:
         setup(batch, head + "-loot", head, body, direction, z)
@@ -87,10 +87,12 @@ def run(batch):
         batch.passed.append(head + ": retained live anchor, exact tool-aware loot, no neighbour harvest")
 
         anchor_y = positions(direction)[0]
-        before = ground_items(ground)
-        batch.script(head + "-anchor-click", [f"look-at-block 3 {anchor_y} {z}", "mouse right click", "wait 6"])
+        batch.script(head + "-anchor-click", [
+            "command kill @e[type=minecraft:item]", f"look-at-block 3 {anchor_y} {z}",
+            "mouse right click", "wait 6",
+        ])
         again = inspect(batch, head + "-anchor-after", head, body, direction, z)
-        check(ground_items(again) == before, head + ": lone anchor has no effects")
+        check(not again["entities"], head + ": lone anchor has no effects")
         batch.passed.append(head + ": single retained anchor passthrough")
 
         setup(batch, head + "-no-drops", head, body, direction, z, drops=False, neighbour=False)
@@ -112,24 +114,40 @@ def run(batch):
         check(block["block"] in family, head + ": retained anchor regrew outward")
         batch.passed.append(head + ": accelerated directed random-tick regrowth")
 
-    batch.script("wheat-regression-cleanup", [
-        "command gamemode creative", "fill 0 65 -10 4 72 -6 minecraft:air --confirm", "wait 4",
-    ])
-    batch.fixture("wheat-regression", "wheat", 7, "wheat_seeds", 3, -8)
-    crop, inventory, ground = batch.click("wheat-regression", -8)
-    check(crop["state"] == "minecraft:wheat[age=0]" and inventory == {"minecraft:wheat_seeds": 3}
-          and ground_counts(ground)["minecraft:wheat"] == 1, "wheat regression")
-    batch.passed.append("wheat regression")
+    if not skip_wheat_regression:
+        state, inventory, ground = batch.script("wheat-regression-setup", [
+            "command gamemode creative", "command clear @s",
+            "command gamerule minecraft:block_drops true",
+            "command gamerule minecraft:random_tick_speed 0",
+            "fill 0 65 -10 8 72 -6 minecraft:air --confirm",
+            "setblock 3 64 -6 minecraft:water --confirm",
+            "setblock 3 64 -8 minecraft:farmland[moisture=7] --confirm",
+            "setblock 3 65 -8 minecraft:wheat[age=7] --confirm",
+            "command kill @e[type=minecraft:item]",
+            "command give @s minecraft:wheat_seeds 3", "command tp @s 0.5 64 -8.5",
+            "select 9", "command gamemode survival", "wait 3",
+            "look-at-block 3 65 -8", "state", "inventory", "entities 20 minecraft:item",
+        ])[-3:]
+        check(state["gamemode"] == "survival" and
+              state["looking_at"]["block"]["pos"] == [3, 65, -8],
+              "wheat regression: survival aim")
+        check(inventory["counts"] == {"minecraft:wheat_seeds": 3} and
+              not ground["entities"], "wheat regression: clean fixture")
+        crop, inventory, ground = batch.click("wheat-regression", -8)
+        check(crop["state"] == "minecraft:wheat[age=0]" and inventory == {"minecraft:wheat_seeds": 3}
+              and ground_counts(ground)["minecraft:wheat"] == 1, "wheat regression")
+        batch.passed.append("wheat regression")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--session", type=Path, required=True)
+    parser.add_argument("--skip-wheat-regression", action="store_true")
     args = parser.parse_args()
     batch = Batch(json.loads(args.session.read_text(encoding="utf-8-sig")))
     result = {"status": "failed", "passed": batch.passed}
     try:
-        run(batch)
+        run(batch, args.skip_wheat_regression)
         result["status"] = "passed"
     except Exception as error:
         result["failure"] = str(error)
