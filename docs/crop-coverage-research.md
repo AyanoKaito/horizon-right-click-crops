@@ -39,9 +39,9 @@ All behavior in this table is **proposed**, except the explicitly labelled exist
 | Cocoa | Mature pod to initial stage | One cocoa bean; preserve facing and supporting jungle log | Implemented; partial dev.4 group validation |
 | Torchflower | Mature field-grown flower to initial crop block | One torchflower seed; never invent a seed from the flower item | Implemented; partial dev.5 group validation |
 | Pitcher crop | Mature two-block crop to one initial crop | One pitcher pod; recognize either clicked half, no duplicate upper-half loot | Implemented; partial dev.5 group validation |
-| Sugar cane | Harvest growth above a retained base in one targeted column | Keep the living base/support and water; no planting debit if no replant occurs | Special-rule candidate; explicitly named by RightClickHarvest |
-| Cactus | Harvest growth above a retained base in one targeted column | Keep base and sand; handle any cactus flower through ordinary updates | Special-rule candidate; explicitly named by RightClickHarvest |
-| Bamboo | Harvest growth above a retained base in one targeted column | Keep viable base; distinguish shoot/stalk; no age-based fake maturity | Special-rule candidate; exact reference behavior not established |
+| Sugar cane | Harvest growth above a retained base in one targeted column | Keep the living base/support and water; no planting debit if no replant occurs | Implemented; partial dev.6 group validation |
+| Cactus | Harvest growth above a retained base in one targeted column | Keep base and sand; handle any cactus flower through ordinary updates | Implemented; partial dev.6 group validation; flower pending |
+| Bamboo | Harvest growth above a retained base in one targeted column | Keep viable base; distinguish shoot/stalk; no age-based fake maturity | Implemented; partial dev.6 group validation |
 | Kelp | Harvest one connected plant while retaining its base | Preserve water and a viable kelp growth state | Special-rule candidate; exact reference behavior not established |
 | Twisting vines | Harvest one connected vine while retaining its rooted portion | Preserve the correct grounded end and head/body transitions | Special-rule candidate; no specific reference support verified |
 | Weeping vines | Harvest one connected hanging vine while retaining its attachment | Preserve the ceiling-side anchor, not an arbitrary lowest block | Special-rule candidate; no specific reference support verified |

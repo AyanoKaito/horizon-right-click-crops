@@ -14,11 +14,20 @@ fn enabled(game: &Game<'_>) -> bool {
     core::enabled(game.native_on(core::MOD_ID))
 }
 
-struct Target {
+struct CropTarget {
     pos: [i32; 3],
     state: BlockStateId,
     crop: core::Crop,
     upper: Option<([i32; 3], BlockStateId)>,
+}
+
+struct ColumnTarget {
+    blocks: Vec<([i32; 3], BlockStateId)>,
+}
+
+enum Target {
+    Crop(CropTarget),
+    Column(ColumnTarget),
 }
 
 fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
@@ -30,6 +39,24 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
         || (game.keys.contains(&KeyCode::ShiftLeft) && (main.is_some() || game.offhand.is_some()))
         || !game.world.loaded(hit.pos[0], hit.pos[2])
     {
+        return None;
+    }
+    let clicked_state = game.world.block(hit.pos[0], hit.pos[1], hit.pos[2]);
+    let clicked_name = game.res.facts().get(clicked_state).name.clone();
+    if core::column_item(&clicked_name).is_some() {
+        let mut base_y = hit.pos[1];
+        while base_y > hit.pos[1] - 32 {
+            let below = game.world.block(hit.pos[0], base_y - 1, hit.pos[2]);
+            if game.res.facts().get(below).name != clicked_name { break; }
+            base_y -= 1;
+        }
+        let mut blocks = Vec::new();
+        for y in base_y + 1..=base_y + 32 {
+            let state = game.world.block(hit.pos[0], y, hit.pos[2]);
+            if game.res.facts().get(state).name != clicked_name { break; }
+            blocks.push(([hit.pos[0], y, hit.pos[2]], state));
+        }
+        if !blocks.is_empty() { return Some(Target::Column(ColumnTarget { blocks })); }
         return None;
     }
     let mut pos = hit.pos;
@@ -57,7 +84,7 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
         { return None; }
         Some((upper_pos, upper_state))
     } else { None };
-    Some(Target { pos, state, crop, upper })
+    Some(Target::Crop(CropTarget { pos, state, crop, upper }))
 }
 
 // No prediction and no packets here: the original caller still sends UseItemOn.
@@ -77,7 +104,43 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
     if !local_actor { return Ok(false); }
     let Some(hit) = hit else { return Ok(false); };
     let Some(target) = target(game, hit) else { return Ok(false); };
-    let Target { pos, state, crop, upper } = target;
+    let crop_target = match target {
+        Target::Column(column) => {
+            let held = game.held().cloned();
+            let mut loot = Vec::new();
+            if game.ui.rules.bool("block_drops") {
+                for (pos, state) in &column.blocks {
+                    loot.extend(game.block_loot_at(*pos, *state, held.as_ref()));
+                }
+            }
+            let written = game.with_level(|b, level, ticks| {
+                let mut changed: Vec<([i32; 3], BlockStateId)> = Vec::new();
+                for (pos, state) in column.blocks.iter().rev() {
+                    let at = BlockPos::new(pos[0], pos[1], pos[2]);
+                    if !b.set_block(level, ticks, at, BlockStateId(0), UPDATE_ALL | UPDATE_SUPPRESS_DROPS) {
+                        for (restore_pos, restore_state) in changed.iter().rev() {
+                            let restore_at = BlockPos::new(restore_pos[0], restore_pos[1], restore_pos[2]);
+                            let _ = b.set_block(level, ticks, restore_at, *restore_state, UPDATE_ALL);
+                        }
+                        return false;
+                    }
+                    changed.push((*pos, *state));
+                }
+                true
+            });
+            if !written { return Ok(true); }
+            for stack in loot {
+                if stack.count > 0 && &*stack.item != "minecraft:air" {
+                    game.pop_resource(hit.pos, stack);
+                }
+            }
+            game.process_level_events()?;
+            game.swing_arm();
+            return Ok(true);
+        }
+        Target::Crop(crop) => crop,
+    };
+    let CropTarget { pos, state, crop, upper } = crop_target;
     let at = BlockPos::new(pos[0], pos[1], pos[2]);
     let young = if let Some(name) = crop.initial_block {
         let Some(default) = game.pack.assets.registry.default_state(name) else { return Ok(true); };

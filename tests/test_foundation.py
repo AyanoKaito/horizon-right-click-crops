@@ -41,9 +41,9 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
         self.assertIn(
             self.compatibility["status"],
-            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested"},
+            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested", "vertical-plants-implementation-in-progress", "vertical-plants-partially-gameplay-tested"},
         )
-        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5"})
+        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5", "not-run-dev6;flower-crops-partial-dev5", "partial-dev6"})
         if self.compatibility["status"] in {"wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested"}:
             self.assertTrue(self.compatibility["validation"]["native_build"].startswith("passed"))
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed")
@@ -63,6 +63,10 @@ class FoundationSourceTests(unittest.TestCase):
             self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "11-passed-dev5")
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev5-eight-crop-stage")
             self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev5-offline-final-fix")
+        if self.compatibility["status"] == "vertical-plants-partially-gameplay-tested":
+            self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "12-passed-dev6")
+            self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev6-eleven-family-stage")
+            self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev6-offline")
         self.assertEqual(self.compatibility["mixin_schema"], 5)
         self.assertEqual(self.compatibility["hook_policy"], "direct-revision-pinned")
 
@@ -158,10 +162,10 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertNotRegex(client, r"block_loot_at|pop_resource|set_block|consume_held")
         self.assertIn("full game restart", self.runtime)
 
-    def test_gameplay_uses_single_ordinary_loot_and_world_write(self):
+    def test_gameplay_uses_one_ordinary_loot_path_per_harvest_adapter(self):
         gameplay = (BUNDLE / "gameplay.rs").read_text()
-        self.assertEqual(gameplay.count("game.block_loot_at("), 1)
-        self.assertEqual(gameplay.count("b.set_block("), 4)
+        self.assertEqual(gameplay.count("game.block_loot_at("), 2)
+        self.assertEqual(gameplay.count("b.set_block("), 6)
         self.assertNotRegex(gameplay, r"\.break_block\(|\.native_give\(|\.consume_held\(")
         self.assertIn("game.integrated.is_some()", gameplay)
         self.assertIn("game.lan_acting_uuid == Some(server.owner)", gameplay)

@@ -4,4 +4,4 @@ version = 4
 
 [[package]]
 name = "horizon-right-click-crops"
-version = "0.1.0-dev.5"
+version = "0.1.0-dev.6"

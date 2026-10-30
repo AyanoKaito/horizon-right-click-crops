@@ -3,9 +3,9 @@ use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.5";
-pub const MOD_DESCRIPTION: &str = "Survival harvesting for eight crop families. Restart after toggling.";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Eight crop families active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.6";
+pub const MOD_DESCRIPTION: &str = "Survival harvesting for crops and three vertical plants. Restart after toggling.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Eleven plant families active; toggles require a full game restart.";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crop {
@@ -31,6 +31,15 @@ pub fn crop_profile(block: &str) -> Option<Crop> {
         _ => return None,
     };
     Some(Crop { mature_age, planting_item, support_below, initial_block, two_blocks })
+}
+
+pub fn column_item(block: &str) -> Option<&'static str> {
+    match block {
+        "minecraft:sugar_cane" => Some("minecraft:sugar_cane"),
+        "minecraft:cactus" => Some("minecraft:cactus"),
+        "minecraft:bamboo" => Some("minecraft:bamboo"),
+        _ => None,
+    }
 }
 
 static ENABLED: OnceLock<bool> = OnceLock::new();
@@ -219,6 +228,17 @@ mod tests {
                 spend_one(&mut slot, item);
                 assert_eq!(slot, Some(Stack(wrong, 3)));
             }
+        }
+    }
+
+    #[test]
+    fn vertical_profiles_are_explicit_and_need_no_planting_payment() {
+        for name in ["minecraft:sugar_cane", "minecraft:cactus", "minecraft:bamboo"] {
+            assert_eq!(column_item(name), Some(name));
+            assert_eq!(crop_profile(name), None);
+        }
+        for name in ["minecraft:bamboo_sapling", "minecraft:kelp", "minecraft:twisting_vines"] {
+            assert_eq!(column_item(name), None);
         }
     }
 }
