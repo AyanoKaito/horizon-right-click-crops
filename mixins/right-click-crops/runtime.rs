@@ -1,11 +1,177 @@
 // Shared by the standalone library and the injected game module.
-use std::sync::{OnceLock, atomic::{AtomicBool, Ordering}};
+use std::sync::{OnceLock, atomic::{AtomicBool, AtomicU32, Ordering}};
 
 pub const MOD_ID: &str = "right-click-crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "0.1.0-dev.8";
-pub const MOD_DESCRIPTION: &str = "Survival harvesting for sixteen plant families. Restart after toggling.";
-pub const STARTUP_MESSAGE: &str = "[right-click-crops] Sixteen plant families active; toggles require a full game restart.";
+pub const MOD_VERSION: &str = "0.1.0-dev.9";
+pub const MOD_DESCRIPTION: &str = "Survival harvesting with individual settings for sixteen plant families.";
+pub const STARTUP_MESSAGE: &str = "[right-click-crops] Plant settings apply immediately; the global mod toggle requires a full game restart.";
+pub const CONFIG_FILE: &str = "plants.conf";
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Plant {
+    Bamboo,
+    Beetroot,
+    Cactus,
+    Carrots,
+    Cocoa,
+    Kelp,
+    Melon,
+    NetherWart,
+    PitcherCrop,
+    Potatoes,
+    Pumpkin,
+    SugarCane,
+    Torchflower,
+    TwistingVines,
+    WeepingVines,
+    Wheat,
+}
+
+impl Plant {
+    pub const ALL: [Self; 16] = [
+        Self::Bamboo,
+        Self::Beetroot,
+        Self::Cactus,
+        Self::Carrots,
+        Self::Cocoa,
+        Self::Kelp,
+        Self::Melon,
+        Self::NetherWart,
+        Self::PitcherCrop,
+        Self::Potatoes,
+        Self::Pumpkin,
+        Self::SugarCane,
+        Self::Torchflower,
+        Self::TwistingVines,
+        Self::WeepingVines,
+        Self::Wheat,
+    ];
+
+    pub const fn key(self) -> &'static str {
+        match self {
+            Self::Bamboo => "bamboo",
+            Self::Beetroot => "beetroot",
+            Self::Cactus => "cactus",
+            Self::Carrots => "carrots",
+            Self::Cocoa => "cocoa",
+            Self::Kelp => "kelp",
+            Self::Melon => "melon",
+            Self::NetherWart => "nether_wart",
+            Self::PitcherCrop => "pitcher_crop",
+            Self::Potatoes => "potatoes",
+            Self::Pumpkin => "pumpkin",
+            Self::SugarCane => "sugar_cane",
+            Self::Torchflower => "torchflower",
+            Self::TwistingVines => "twisting_vines",
+            Self::WeepingVines => "weeping_vines",
+            Self::Wheat => "wheat",
+        }
+    }
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Bamboo => "Bamboo",
+            Self::Beetroot => "Beetroot",
+            Self::Cactus => "Cactus",
+            Self::Carrots => "Carrots",
+            Self::Cocoa => "Cocoa",
+            Self::Kelp => "Kelp",
+            Self::Melon => "Melon",
+            Self::NetherWart => "Nether wart",
+            Self::PitcherCrop => "Pitcher crop",
+            Self::Potatoes => "Potatoes",
+            Self::Pumpkin => "Pumpkin",
+            Self::SugarCane => "Sugar cane",
+            Self::Torchflower => "Torchflower",
+            Self::TwistingVines => "Twisting vines",
+            Self::WeepingVines => "Weeping vines",
+            Self::Wheat => "Wheat",
+        }
+    }
+
+    pub fn from_key(key: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|plant| plant.key() == key)
+    }
+
+    pub fn from_block(block: &str) -> Option<Self> {
+        match block {
+            "minecraft:bamboo" => Some(Self::Bamboo),
+            "minecraft:beetroots" => Some(Self::Beetroot),
+            "minecraft:cactus" => Some(Self::Cactus),
+            "minecraft:carrots" => Some(Self::Carrots),
+            "minecraft:cocoa" => Some(Self::Cocoa),
+            "minecraft:kelp" | "minecraft:kelp_plant" => Some(Self::Kelp),
+            "minecraft:melon" => Some(Self::Melon),
+            "minecraft:nether_wart" => Some(Self::NetherWart),
+            "minecraft:pitcher_crop" => Some(Self::PitcherCrop),
+            "minecraft:potatoes" => Some(Self::Potatoes),
+            "minecraft:pumpkin" => Some(Self::Pumpkin),
+            "minecraft:sugar_cane" => Some(Self::SugarCane),
+            "minecraft:torchflower" => Some(Self::Torchflower),
+            "minecraft:twisting_vines" | "minecraft:twisting_vines_plant" => Some(Self::TwistingVines),
+            "minecraft:weeping_vines" | "minecraft:weeping_vines_plant" => Some(Self::WeepingVines),
+            "minecraft:wheat" => Some(Self::Wheat),
+            _ => None,
+        }
+    }
+
+    const fn bit(self) -> u32 { 1 << self as u8 }
+}
+
+const ALL_PLANTS_MASK: u32 = (1 << Plant::ALL.len()) - 1;
+static PLANT_SETTINGS_LOADED: OnceLock<()> = OnceLock::new();
+static PLANT_MASK: AtomicU32 = AtomicU32::new(ALL_PLANTS_MASK);
+
+pub fn parse_plant_config(contents: Option<&str>) -> u32 {
+    let mut mask = ALL_PLANTS_MASK;
+    let Some(contents) = contents else { return mask; };
+    for line in contents.lines().map(str::trim) {
+        if line.is_empty() || line.starts_with('#') { continue; }
+        let Some((key, value)) = line.split_once('=') else { continue; };
+        let Some(plant) = Plant::from_key(key.trim()) else { continue; };
+        match value.trim() {
+            "true" => mask |= plant.bit(),
+            "false" => mask &= !plant.bit(),
+            _ => {}
+        }
+    }
+    mask
+}
+
+pub fn serialize_plant_config(mask: u32) -> String {
+    let mut out = String::from(
+        "# Right-Click Crops plant settings.\n# true enables the mod's action; false leaves ordinary Horizon behavior.\n",
+    );
+    for plant in Plant::ALL {
+        out.push_str(plant.key());
+        out.push('=');
+        out.push_str(if mask & plant.bit() != 0 { "true" } else { "false" });
+        out.push('\n');
+    }
+    out
+}
+
+pub fn plant_settings_loaded() -> bool { PLANT_SETTINGS_LOADED.get().is_some() }
+
+pub fn load_plant_settings_once(contents: Option<&str>) {
+    PLANT_SETTINGS_LOADED.get_or_init(|| {
+        PLANT_MASK.store(parse_plant_config(contents), Ordering::Release);
+    });
+}
+
+pub fn plant_enabled(plant: Plant) -> bool {
+    PLANT_MASK.load(Ordering::Acquire) & plant.bit() != 0
+}
+
+pub fn toggle_plant(plant: Plant) {
+    PLANT_MASK.fetch_xor(plant.bit(), Ordering::AcqRel);
+}
+
+pub fn plant_config() -> String {
+    serialize_plant_config(PLANT_MASK.load(Ordering::Acquire))
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crop {
@@ -307,5 +473,41 @@ mod tests {
         for name in ["minecraft:carved_pumpkin", "minecraft:jack_o_lantern", "minecraft:pumpkin_stem"] {
             assert_eq!(stem_fruit_profile(name), None);
         }
+    }
+
+    #[test]
+    fn plant_settings_are_alphabetical_and_cover_only_mod_targets() {
+        assert_eq!(Plant::ALL.map(Plant::label), [
+            "Bamboo", "Beetroot", "Cactus", "Carrots", "Cocoa", "Kelp", "Melon",
+            "Nether wart", "Pitcher crop", "Potatoes", "Pumpkin", "Sugar cane",
+            "Torchflower", "Twisting vines", "Weeping vines", "Wheat",
+        ]);
+        assert_eq!(Plant::from_block("minecraft:kelp_plant"), Some(Plant::Kelp));
+        assert_eq!(Plant::from_block("minecraft:weeping_vines_plant"), Some(Plant::WeepingVines));
+        for ordinary in ["minecraft:sweet_berry_bush", "minecraft:cave_vines", "minecraft:cave_vines_plant"] {
+            assert_eq!(Plant::from_block(ordinary), None);
+        }
+    }
+
+    #[test]
+    fn plant_config_defaults_to_enabled_and_accepts_exact_boolean_overrides() {
+        assert_eq!(parse_plant_config(None), ALL_PLANTS_MASK);
+        let mask = parse_plant_config(Some(
+            "# player choices\nkelp=false\nwheat=false\nunknown=false\ncactus=invalid\n",
+        ));
+        assert_eq!(mask & Plant::Kelp.bit(), 0);
+        assert_eq!(mask & Plant::Wheat.bit(), 0);
+        assert_ne!(mask & Plant::Cactus.bit(), 0);
+        assert_ne!(mask & Plant::Bamboo.bit(), 0);
+    }
+
+    #[test]
+    fn serialized_plant_config_is_stable_and_round_trips() {
+        let mask = ALL_PLANTS_MASK & !Plant::Bamboo.bit() & !Plant::PitcherCrop.bit();
+        let text = serialize_plant_config(mask);
+        assert!(text.contains("bamboo=false\n"));
+        assert!(text.contains("pitcher_crop=false\n"));
+        assert!(!text.contains("berry"));
+        assert_eq!(parse_plant_config(Some(&text)), mask);
     }
 }

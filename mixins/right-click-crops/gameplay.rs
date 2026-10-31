@@ -11,6 +11,10 @@ impl core::SeedStack for ItemStack {
 }
 
 fn enabled(game: &Game<'_>) -> bool {
+    if !core::plant_settings_loaded() {
+        let stored = game.native_setting(core::MOD_ID, core::CONFIG_FILE);
+        core::load_plant_settings_once(stored.as_deref());
+    }
     core::enabled(game.native_on(core::MOD_ID))
 }
 
@@ -49,6 +53,8 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
     }
     let clicked_state = game.world.block(hit.pos[0], hit.pos[1], hit.pos[2]);
     let clicked_name = game.res.facts().get(clicked_state).name.clone();
+    let plant = core::Plant::from_block(&clicked_name)?;
+    if !core::plant_enabled(plant) { return None; }
     if let Some(profile) = core::vertical_profile(&clicked_name) {
         let mut anchor_y = hit.pos[1];
         for _ in 0..32 {

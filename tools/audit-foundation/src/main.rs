@@ -121,6 +121,18 @@ fn audit(source: &Path, stage: &Path, bundle: &Path, file: &str, kind: &str) -> 
         vec![
             ExpectedHook::load(bundle, "native_tick", "startup.rs", "startup(&*self)")?,
             ExpectedHook::load(bundle, "native_mods", "register.rs", "register(mods)")?,
+            ExpectedHook::load(
+                bundle,
+                "native_settings",
+                "settings_list.rs",
+                "settings_list(&mut *self, mod_id, buttons)",
+            )?,
+            ExpectedHook::load(
+                bundle,
+                "native_settings_click",
+                "settings_click.rs",
+                "settings_click(&mut *self, mod_id, button)",
+            )?,
         ]
     } else {
         vec![ExpectedHook::cancelling(bundle, "remote_block_reacts", "client_reacts.rs", "client_reacts(&*self, hit)")?]
@@ -147,7 +159,7 @@ fn main() -> Result<()> {
     audit(source, stage, bundle, "crates/horizon-client/src/game.rs", "game")?;
     audit(source, stage, bundle, "crates/horizon-client/src/game/native_hooks.rs", "native")?;
     audit(source, stage, bundle, "crates/horizon-client/src/game/remote.rs", "remote")?;
-    println!("Verified four declared heads and two unchanged support modules.");
+    println!("Verified six declared heads and two unchanged support modules.");
     Ok(())
 }
 

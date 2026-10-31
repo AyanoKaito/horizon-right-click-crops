@@ -41,9 +41,9 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
         self.assertIn(
             self.compatibility["status"],
-            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested", "vertical-plants-implementation-in-progress", "vertical-plants-partially-gameplay-tested", "kelp-vines-implementation-in-progress", "kelp-vines-partially-gameplay-tested", "stem-fruits-implementation-in-progress", "stem-fruits-partially-gameplay-tested", "approved-families-partially-gameplay-tested"},
+            {"wheat-implementation-in-progress", "wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested", "field-crops-compiled-gameplay-pending", "field-crops-partially-gameplay-tested", "wart-cocoa-implementation-in-progress", "wart-cocoa-compiled-gameplay-pending", "wart-cocoa-partially-gameplay-tested", "flower-crops-implementation-in-progress", "flower-crops-partially-gameplay-tested", "vertical-plants-implementation-in-progress", "vertical-plants-partially-gameplay-tested", "kelp-vines-implementation-in-progress", "kelp-vines-partially-gameplay-tested", "stem-fruits-implementation-in-progress", "stem-fruits-partially-gameplay-tested", "approved-families-partially-gameplay-tested", "settings-partially-gameplay-tested"},
         )
-        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5", "not-run-dev6;flower-crops-partial-dev5", "partial-dev6", "not-run-dev7;vertical-plants-partial-dev6", "partial-dev7", "not-run-dev8;kelp-vines-partial-dev7", "partial-dev8", "partial-dev8-18-approved-families"})
+        self.assertIn(self.compatibility["validation"]["gameplay"], {"not-run", "partial", "not-run-dev3;wheat-partial-dev2", "partial-dev3", "not-run-dev4;field-crops-partial-dev3", "partial-dev4", "not-run-dev5;wart-cocoa-partial-dev4", "partial-dev5", "not-run-dev6;flower-crops-partial-dev5", "partial-dev6", "not-run-dev7;vertical-plants-partial-dev6", "partial-dev7", "not-run-dev8;kelp-vines-partial-dev7", "partial-dev8", "partial-dev8-18-approved-families", "partial-dev9-settings;partial-dev8-18-approved-families"})
         if self.compatibility["status"] in {"wheat-compiled-gameplay-pending", "wheat-partially-gameplay-tested"}:
             self.assertTrue(self.compatibility["validation"]["native_build"].startswith("passed"))
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed")
@@ -79,6 +79,12 @@ class FoundationSourceTests(unittest.TestCase):
             self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "13-passed-dev8")
             self.assertEqual(self.compatibility["validation"]["wheat_ast_audit"], "passed-dev8-sixteen-family-stage")
             self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev8-offline")
+        if self.compatibility["status"] == "settings-partially-gameplay-tested":
+            self.assertEqual(self.compatibility["validation"]["standalone_rust_tests"], "16-passed-dev9")
+            self.assertEqual(self.compatibility["validation"]["native_build"], "passed-dev9-offline-fast")
+            self.assertTrue(self.compatibility["validation"]["settings_ui"].startswith("passed-dev9"))
+            self.assertTrue(self.compatibility["validation"]["settings_live_toggle"].startswith("passed-dev9"))
+            self.assertTrue(self.compatibility["validation"]["settings_persistence"].startswith("passed-dev9"))
         self.assertEqual(self.compatibility["mixin_schema"], 5)
         self.assertEqual(self.compatibility["hook_policy"], "direct-revision-pinned")
 
@@ -119,9 +125,9 @@ class FoundationSourceTests(unittest.TestCase):
         identifiers += [hook["id"] for hook in self.manifest["injection"]]
         self.assertEqual(len(identifiers), len(set(identifiers)))
 
-    def test_only_four_bounded_head_hooks_are_declared(self):
+    def test_only_six_bounded_head_hooks_are_declared(self):
         hooks = self.manifest["injection"]
-        self.assertEqual(len(hooks), 4)
+        self.assertEqual(len(hooks), 6)
         for hook in hooks:
             self.assertEqual(hook["kind"], "HEAD")
             self.assertEqual(hook.get("cancellable", False), hook["id"] in {"harvest-wheat", "consume-local-wheat-click"})
@@ -133,6 +139,8 @@ class FoundationSourceTests(unittest.TestCase):
             {
                 "register-foundation": "horizon_client::game::native_hooks::Game<'_>::native_mods",
                 "report-foundation-start": "horizon_client::game::native_hooks::Game<'_>::native_tick",
+                "list-plant-settings": "horizon_client::game::native_hooks::Game<'_>::native_settings",
+                "toggle-plant-setting": "horizon_client::game::native_hooks::Game<'_>::native_settings_click",
                 "harvest-wheat": "horizon_client::game::Game<'_>::use_hand",
                 "consume-local-wheat-click": "horizon_client::game::remote::Game<'_>::remote_block_reacts",
             },
@@ -141,7 +149,7 @@ class FoundationSourceTests(unittest.TestCase):
     def test_bindings_do_not_evaluate_game_calls(self):
         for hook in self.manifest["injection"]:
             for binding in hook["bindings"]:
-                self.assertIn(binding["value"], {"mods", "&*self", "&mut *self", "block_hit", "hit"})
+                self.assertIn(binding["value"], {"mods", "&*self", "&mut *self", "mod_id", "buttons", "button", "block_hit", "hit"})
                 if binding["name"] == "game":
                     self.assertIn(binding["ty"], {"&crate::game::Game<'_>", "&mut crate::game::Game<'_>"})
                 if binding["name"] == "block_hit":
@@ -195,6 +203,18 @@ class FoundationSourceTests(unittest.TestCase):
         self.assertIn("core::spend_one(game.stack_in_mut(slot), crop.planting_item)", gameplay)
         self.assertIn("crop.support_below.is_some_and", gameplay)
         self.assertIn("b.can_survive(level, ticks, at, young)", gameplay)
+
+    def test_settings_are_flat_persistent_and_limited_to_mod_targets(self):
+        listed = (BUNDLE / "settings_list.rs").read_text()
+        clicked = (BUNDLE / "settings_click.rs").read_text()
+        gameplay = (BUNDLE / "gameplay.rs").read_text()
+        self.assertIn('pub const CONFIG_FILE: &str = "plants.conf";', self.runtime)
+        self.assertIn("buttons.extend(runtime::Plant::ALL.map", listed)
+        self.assertIn("runtime::Plant::ALL.get(button)", clicked)
+        self.assertIn("game.native_set_setting(runtime::MOD_ID, runtime::CONFIG_FILE", clicked)
+        self.assertIn("core::Plant::from_block(&clicked_name)?", gameplay)
+        self.assertIn("if !core::plant_enabled(plant) { return None; }", gameplay)
+        self.assertNotRegex(listed + clicked, r"berry|category|group")
 
     def test_bundle_source_and_metadata_use_english_text(self):
         paths = list(BUNDLE.glob("*.rs")) + [ROOT / "compatibility.json"]

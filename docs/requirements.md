@@ -41,9 +41,9 @@ Chorus, sea pickles, mushrooms, fungi, trees and other decorative flora are defe
 
 ## Settings
 
-- R24: The mod/convenience behavior must be disableable. Proposed settings are: mod enabled; hoe requirement disabled; individual supported crops enabled.
-- R25: Choose the exact format, field names, and application behavior after checking the native template and Horizon conventions.
-- R26: An in-game settings page is desirable but not promised until validated; document when a world reload or game restart is required.
+- R24: The whole mod and each of the sixteen plant families whose interaction it changes must be disableable. Sweet and glow berries retain ordinary Horizon behavior and do not receive mod settings.
+- R25: Keep individual choices in one human-readable `plants.conf` in the mod's native data folder. Use one exact boolean key per managed family, default missing or invalid values to enabled, and expose the same choices through Horizon's native settings hooks.
+- R26: The in-game page is one alphabetical scrolling list without categories, headings, counts or a duplicate disable-all action. Individual changes apply immediately and are saved; manual file edits load on the next game start. The standard global native-mod toggle still requires a full game restart.
 - R27: A disabled mod does not interfere with ordinary behavior. Verify disabling/removing it without world damage.
 - R28: Do not add area harvesting, hunger/experience costs, bonus loot, or unrelated improvements without approval.
 
