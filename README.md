@@ -1,62 +1,75 @@
 # Horizon Right-Click Crops
 
-An independent, work-in-progress Horizon mod for harvesting mature crops with right-click and replanting when a suitable planting item is available in the drops or the player's inventory.
+A small native Horizon mod that harvests mature plants with right-click, replants when appropriate, and lets every mod-managed plant be disabled separately.
 
-**Work-in-progress survival crop prototype. Not a public release or fully accepted build.**
+> **Pre-release preview.** The current source targets Horizon Nightly `2026-10-29` (`64e2989`) and Minecraft: Java Edition 26.3. No public `.hnmod` package or stable release is available yet.
 
-The earlier [native foundation](docs/native-foundation.md) compiled and passed an isolated smoke test. Version `0.1.0-dev.2` adds the survival wheat implementation: ground loot, one seed from loot first or inventory second, and no replant when neither can pay. See the [integration contract](specs/001-wheat-harvest/contracts.md) and [wheat validation record](docs/wheat-validation.md) for actual progress and limitations. Foundation results alone do not validate harvesting.
+## Features
 
-Version `0.1.0-dev.3` extends that same field-crop adapter to carrots, potatoes and beetroot. Its [group validation record](docs/field-crop-validation.md) distinguishes completed checks from unverified behaviors. The [coverage survey](docs/crop-coverage-research.md) lists the approved 18-family implementation scope; it does not imply all families are implemented.
+- Right-click one mature plant to harvest it.
+- Use Horizon's ordinary loot, including supported tool and Fortune effects.
+- Replant with exactly one matching item from the generated loot, or from the player's inventory when the loot has none.
+- Harvest without replanting when no matching item is available; never create a free seed.
+- Keep a viable base for vertical plants and the attached stem for pumpkins and melons.
+- Toggle each of the sixteen mod-managed plant families independently in `Options > Mods > Right-Click Crops > Settings`.
+- Preserve ordinary left-click breaking, immature crops, bone meal and unrelated interactions.
 
-Version `0.1.0-dev.4` adds nether wart and attached cocoa; see its [separate validation record](docs/wart-cocoa-validation.md). Both retain the same loot-first payment rule, while wart keeps soul sand and cocoa keeps its facing and attachment. Version-specific test results are documented separately; earlier wheat or field-crop checks are not silently relabelled as new evidence.
+The mod handles one targeted plant at a time. It does not add area harvesting, bonus loot, hunger costs or experience costs.
 
-Version `0.1.0-dev.5` adds farm-grown torchflowers and two-block pitcher crops. Their [validation record](docs/flower-crop-validation.md) covers the mature-block transition and upper/lower normalization separately from ordinary field crops.
+## Supported plants
 
-Version `0.1.0-dev.6` begins retained-base vertical plants with sugar cane, cactus and bamboo. See the [group validation record](docs/vertical-plant-validation.md); implementation status does not imply completed game support.
+| Behavior | Plants |
+|---|---|
+| Harvest and replant | Wheat, carrots, potatoes, beetroot, nether wart, cocoa, torchflower, pitcher crop |
+| Harvest upper growth and retain a living base | Sugar cane, cactus, bamboo, kelp, twisting vines, weeping vines |
+| Harvest fruit and retain the associated stem | Pumpkin, melon |
+| Ordinary Horizon behavior, not modified by this mod | Sweet berries, glow berries |
 
-Version `0.1.0-dev.7` extends the directed retained-anchor path to kelp, twisting vines and downward-growing weeping vines. See the [separate validation record](docs/kelp-vine-validation.md).
+Plants outside this explicit list are passed through unchanged. Generic compatibility with crops from other mods is not claimed.
 
-Version `0.1.0-dev.8` adds stem-associated pumpkin and melon fruit without seed payment, while preserving ordinary pumpkin carving. See the [group validation record](docs/stem-fruit-validation.md).
+## Settings
 
-Sweet berry bushes and glow berries remain ordinary Horizon interactions rather than separate mod targets. Their [final-stage preservation record](docs/berry-validation.md) completes grouped checks for the 18 approved families.
+The in-game page is one alphabetical scrolling list of `Plant: ON/OFF` buttons. Changes apply immediately to the client and its integrated server.
 
-Version `0.1.0-dev.9` adds immediate individual settings for the sixteen plant families the mod changes. Options > Mods provides one alphabetical scrolling list, and the same choices are stored in a human-readable [`plants.conf`](docs/settings.md). Ordinary sweet and glow berry behavior remains outside these settings.
+The same choices are stored in:
 
-The initial implementation is limited to the single-player owner (default integrated server and the in-frame comparison path). External clients, LAN guests and dedicated servers are not enabled or supported yet. Fully restart the game after toggling the whole native mod; individual plant settings apply immediately. Other game modes and plants outside the explicit profiles remain unchanged.
+```text
+horizon-mods/.horizon-mod-data/right-click-crops/plants.conf
+```
 
-Additional isolated checks compare four tool cases, including Fortune III, against the ordinary game; all 16 paired crops preserved ordinary loot minus exactly one seed per replant. Nonempty seedless loot was checked with a separately authored test-only resource fixture, not by changing ordinary installed loot or the mod's runtime tables. See the validation record for scope, raw-evidence locations and remaining acceptance work.
+Manual file edits load on the next game start. The standard global native-mod switch still controls the whole mod and requires a full process restart. See [Plant settings](docs/settings.md) for the exact keys and defaults.
 
-## Intended behavior
+## Current compatibility
 
-- Harvest a mature supported crop with right-click, without requiring crouching.
-- Use the game's normal drops: reserve one suitable planting item from the loot first; if none drops, consume one from the player's inventory when available.
-- Drop the remaining loot on the ground. If neither source provides a planting item, harvest without replanting and leave the support unchanged.
-- Hold right-click and aim at successive mature plants to harvest them through normal repeated interactions, one plant at a time, not in an area.
-- Leave bone meal interactions to the game's normal behavior.
-- Preserve normal growth, the farmland below, left-click removal, and unrelated interactions.
-- Begin with a survival wheat prototype, then validate further plant families in groups without cheats during harvesting.
+- **Verified:** isolated survival single-player with Horizon's default integrated-server path.
+- **Also exercised during development:** Horizon's in-frame single-player comparison path.
+- **Not yet supported or claimed:** external multiplayer clients, LAN guests, dedicated servers, creative/adventure harvesting, other Horizon revisions, or arbitrary modded crops.
 
-Creative mode and bone meal may be used to prepare isolated test fields and supplies. Harvest behavior is then tested in survival; setup permissions are not a requirement of the mod itself. Natural growth is verified separately from bone-meal-assisted preparation.
+Native Horizon mods are revision-pinned and compiled into a dedicated game build. This source will need a compatibility update for a different Horizon Nightly.
 
-## Technical direction
+## Installation status
 
-The agreed approach is a native Rust mod using `horizon-mixins`, packaged separately from Horizon. Native mods are compiled into a dedicated game build and run with the player's account permissions; they are not sandboxed.
+This repository currently provides a source preview, not a player-ready release. A reviewed `.hnmod` package and launcher/catalog instructions will be added after the remaining compatibility, packaging and licensing work is complete.
 
-Horizon revision, native hook compatibility, Windows build behavior and dedicated-server support must be validated before compatibility is advertised. Single-player, LAN and dedicated-server support are goals, not verified capabilities of this project.
+For the native-mod model itself, see Horizon's [native mod documentation](https://github.com/horizon-rust/horizon/blob/main/docs/native-mods.md).
 
-Not an official Horizon or Minecraft project. Not affiliated with or endorsed by Mojang or Microsoft. This is not an announced port of another harvest mod.
+## Original implementation and AI assistance
 
-## Project documentation
+Right-Click Crops is an original implementation for Horizon. It is **not a port of another crop-harvest mod**, and no gameplay source code was copied from one. Published behavior of similar mods was reviewed only to understand common expectations and define this project's scope.
 
-- [Requirements](docs/requirements.md) — agreed behavior, limits, and unresolved choices.
-- [Wheat prototype specification](specs/001-wheat-harvest/spec.md) — approved product behavior and future acceptance scenarios.
-- [Decisions](docs/decisions.md) — approved choices and pending decisions.
-- [Research](docs/research.md) — versioned technical findings and licensing references.
-- [Development](docs/development.md) — tooling, test preparation, and preparation status.
-- [Original brief](docs/original-brief.md) — English translation of the historical input, not the current specification.
+Development was AI-assisted under human direction. AI tooling contributed to implementation, test harnesses and documentation. Claims in this README are limited to checks that were actually run; AI output is not treated as evidence by itself.
 
-All Git-tracked content and GitHub-facing material is in English. Discussion and ignored local review documents may be in Russian. A complete player-facing guide will be prepared before public release.
+The current `dev.9` stage passed:
 
-## License and releases
+- 16 standalone Rust tests;
+- 26 Python structural and observation tests;
+- a real six-hook `horizon-mixins` plan and generated-source AST audit;
+- an offline native Horizon build against the pinned revision;
+- isolated in-game batches for all agreed plant families;
+- live per-plant toggle and restart-persistence checks in the real settings UI.
 
-The project's own code license has not been selected. Do not publish a release until licensing, attribution, tests and package contents have been reviewed. Third-party tooling retains its own license; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Exact completed and pending checks are recorded in [Development](docs/development.md), [Compatibility](compatibility.json) and the group validation documents under [`docs/`](docs/).
+
+## Project status
+
+This is work in progress, not an official Horizon or Minecraft project, and is not affiliated with or endorsed by Mojang or Microsoft. The project's own license is still pending, so no public release should be redistributed yet. Third-party development materials retain their own notices in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
