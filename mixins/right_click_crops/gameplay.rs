@@ -1,7 +1,8 @@
-use super::{Game, Hit, right_click_crops as core};
+use super::{Game, right_click_crops as core};
 use horizon_client::{command::args::GameMode, first_person::Hand, items::ItemStack};
 use horizon_core::position::BlockPos;
 use horizon_world::{level::flags::{UPDATE_ALL, UPDATE_CLIENTS, UPDATE_KNOWN_SHAPE, UPDATE_SUPPRESS_DROPS}, registry::BlockStateId};
+use std::{collections::HashMap, sync::{Mutex, OnceLock}};
 use winit::keyboard::KeyCode;
 
 impl core::SeedStack for ItemStack {
@@ -40,35 +41,73 @@ enum Target {
     Fruit(FruitTarget),
 }
 
-fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
+#[derive(Clone, Copy)]
+struct HandledClick {
+    pos: [i32; 3],
+    tick: u64,
+}
+
+static HANDLED_CLICKS: OnceLock<Mutex<HashMap<u128, HandledClick>>> = OnceLock::new();
+
+fn actor_id(game: &Game<'_>) -> Option<u128> {
+    game.lan_acting_uuid.or_else(|| game.serving.as_ref().map(|server| server.owner))
+}
+
+fn handled(game: &Game<'_>, pos: [i32; 3]) -> horizon_client::Result<bool> {
+    if let Some(actor) = actor_id(game) {
+        let clicks = HANDLED_CLICKS.get_or_init(|| Mutex::new(HashMap::new()));
+        clicks.lock().unwrap_or_else(|error| error.into_inner())
+            .insert(actor, HandledClick { pos, tick: game.ticks });
+    }
+    Ok(true)
+}
+
+pub(super) fn claim_offhand_followup(game: &Game<'_>, pos: Option<[i32; 3]>) -> bool {
+    if game.hand != Hand::Off {
+        return false;
+    }
+    let Some(actor) = actor_id(game) else { return false; };
+    let clicks = HANDLED_CLICKS.get_or_init(|| Mutex::new(HashMap::new()));
+    let mut clicks = clicks.lock().unwrap_or_else(|error| error.into_inner());
+    let Some(click) = clicks.get(&actor).copied() else {
+        return false;
+    };
+    let matches = pos.is_none_or(|pos| click.pos == pos)
+        && game.ticks.checked_sub(click.tick).is_some_and(|elapsed| elapsed <= 2);
+    // UseItemOn and UseItem may both arrive for the same offhand click.
+    if pos.is_none() || !matches { clicks.remove(&actor); }
+    matches
+}
+
+fn target(game: &Game<'_>, hit: [i32; 3]) -> Option<Target> {
     let bone_meal = |s: &ItemStack| s.count > 0 && &*s.item == "minecraft:bone_meal";
     let main = game.stack_in(game.selected);
     if game.mode != GameMode::Survival
         || main.is_some_and(bone_meal)
         || game.offhand.as_ref().is_some_and(bone_meal)
         || (game.keys.contains(&KeyCode::ShiftLeft) && (main.is_some() || game.offhand.is_some()))
-        || !game.world.loaded(hit.pos[0], hit.pos[2])
+        || !game.world.loaded(hit[0], hit[2])
     {
         return None;
     }
-    let clicked_state = game.world.block(hit.pos[0], hit.pos[1], hit.pos[2]);
+    let clicked_state = game.world.block(hit[0], hit[1], hit[2]);
     let clicked_name = game.res.facts().get(clicked_state).name.clone();
     let plant = core::Plant::from_block(&clicked_name)?;
     if !core::plant_enabled(plant) { return None; }
     if let Some(profile) = core::vertical_profile(&clicked_name) {
-        let mut anchor_y = hit.pos[1];
+        let mut anchor_y = hit[1];
         for _ in 0..32 {
             let support_y = anchor_y - profile.growth_y;
-            let support = game.world.block(hit.pos[0], support_y, hit.pos[2]);
+            let support = game.world.block(hit[0], support_y, hit[2]);
             if !core::same_vertical_plant(&game.res.facts().get(support).name, profile) { break; }
             anchor_y = support_y;
         }
         let mut blocks = Vec::new();
         for distance in 1..=32 {
             let y = anchor_y + profile.growth_y * distance;
-            let state = game.world.block(hit.pos[0], y, hit.pos[2]);
+            let state = game.world.block(hit[0], y, hit[2]);
             if !core::same_vertical_plant(&game.res.facts().get(state).name, profile) { break; }
-            blocks.push(([hit.pos[0], y, hit.pos[2]], state));
+            blocks.push(([hit[0], y, hit[2]], state));
         }
         if !blocks.is_empty() { return Some(Target::Column(ColumnTarget { blocks })); }
         return None;
@@ -80,22 +119,22 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
         {
             return None;
         }
-        if !game.border.contains(f64::from(hit.pos[0]), f64::from(hit.pos[2])) {
+        if !game.border.contains(f64::from(hit[0]), f64::from(hit[2])) {
             return None;
         }
         for (dx, dz, facing) in [(-1, 0, "east"), (1, 0, "west"), (0, -1, "south"), (0, 1, "north")] {
-            let stem_pos = [hit.pos[0] + dx, hit.pos[1], hit.pos[2] + dz];
+            let stem_pos = [hit[0] + dx, hit[1], hit[2] + dz];
             let stem_state = game.world.block(stem_pos[0], stem_pos[1], stem_pos[2]);
             if &*game.res.facts().get(stem_state).name == fruit.attached_stem
                 && game.pack.assets.registry.state(stem_state)?
                     .properties.get("facing").map(String::as_str) == Some(facing)
             {
-                return Some(Target::Fruit(FruitTarget { pos: hit.pos, state: clicked_state }));
+                return Some(Target::Fruit(FruitTarget { pos: hit, state: clicked_state }));
             }
         }
         return None;
     }
-    let mut pos = hit.pos;
+    let mut pos = hit;
     let mut state = game.world.block(pos[0], pos[1], pos[2]);
     let clicked = game.pack.assets.registry.state(state)?;
     if &*game.res.facts().get(state).name == "minecraft:pitcher_crop"
@@ -123,22 +162,10 @@ fn target(game: &Game<'_>, hit: &Hit) -> Option<Target> {
     Some(Target::Crop(CropTarget { pos, state, crop, upper }))
 }
 
-// No prediction and no packets here: the original caller still sends UseItemOn.
-pub(super) fn client_takes(game: &Game<'_>, hit: &Hit) -> bool {
-    game.integrated.is_some() && enabled(game) && target(game, hit).is_some()
-}
-
-pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client::Result<bool> {
+pub(super) fn harvest(game: &mut Game<'_>, hit: [i32; 3]) -> horizon_client::Result<bool> {
     if !enabled(game) || game.remote.is_some() || game.hand != Hand::Main {
         return Ok(false);
     }
-    // No capability handshake exists for external players in this prototype.
-    let local_actor = match game.serving.as_ref() {
-        Some(server) => game.lan_acting_uuid == Some(server.owner),
-        None => game.options.dedicated.is_none() && game.lan_acting.is_none(),
-    };
-    if !local_actor { return Ok(false); }
-    let Some(hit) = hit else { return Ok(false); };
     let Some(target) = target(game, hit) else { return Ok(false); };
     let crop_target = match target {
         Target::Column(column) => {
@@ -164,15 +191,14 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
                 }
                 true
             });
-            if !written { return Ok(true); }
+            if !written { return handled(game, hit); }
             for stack in loot {
                 if stack.count > 0 && &*stack.item != "minecraft:air" {
-                    game.pop_resource(hit.pos, stack);
+                    game.pop_resource(hit, stack);
                 }
             }
             game.process_level_events()?;
-            game.swing_arm();
-            return Ok(true);
+            return handled(game, hit);
         }
         Target::Fruit(fruit) => {
             let held = game.held().cloned();
@@ -185,25 +211,24 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
             let written = game.with_level(|b, level, ticks| {
                 b.set_block(level, ticks, at, BlockStateId(0), UPDATE_ALL | UPDATE_SUPPRESS_DROPS)
             });
-            if !written { return Ok(true); }
+            if !written { return handled(game, hit); }
             for stack in loot {
                 if stack.count > 0 && &*stack.item != "minecraft:air" {
                     game.pop_resource(fruit.pos, stack);
                 }
             }
             game.process_level_events()?;
-            game.swing_arm();
-            return Ok(true);
+            return handled(game, hit);
         }
         Target::Crop(crop) => crop,
     };
     let CropTarget { pos, state, crop, upper } = crop_target;
     let at = BlockPos::new(pos[0], pos[1], pos[2]);
     let young = if let Some(name) = crop.initial_block {
-        let Some(default) = game.pack.assets.registry.default_state(name) else { return Ok(true); };
+        let Some(default) = game.pack.assets.registry.default_state(name) else { return handled(game, hit); };
         default
     } else {
-        let Some(young) = game.with_props(state, &[("age", "0")]) else { return Ok(true); };
+        let Some(young) = game.with_props(state, &[("age", "0")]) else { return handled(game, hit); };
         young
     };
     // Reject unsupported ground before loot/RNG, inventory or world effects.
@@ -211,7 +236,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
         || crop.support_below.is_some_and(|support| &*game.res.facts().get(game.world.block(pos[0], pos[1] - 1, pos[2])).name != support)
         || !game.with_level(|b, level, ticks| b.can_survive(level, ticks, at, young))
     {
-        return Ok(true);
+        return handled(game, hit);
     }
     let held = game.held().cloned();
     let mut loot = if game.ui.rules.bool("block_drops") {
@@ -235,7 +260,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
         }
         b.set_block(level, ticks, at, after, UPDATE_ALL)
     });
-    if !written { return Ok(true); }
+    if !written { return handled(game, hit); }
     match payment {
         core::Payment::Loot(index) => {
             loot[index].count -= 1;
@@ -249,6 +274,5 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: Option<&Hit>) -> horizon_client:
         }
     }
     game.process_level_events()?;
-    game.swing_arm();
-    Ok(true)
+    handled(game, hit)
 }

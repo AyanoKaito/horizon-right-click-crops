@@ -25,11 +25,6 @@ impl ExpectedHook {
         })
     }
 
-    fn cancelling(bundle: &Path, method: &'static str, file: &str, call: &str) -> Result<Self> {
-        let mut hook = Self::load(bundle, method, file, call)?;
-        hook.cancellable = true;
-        Ok(hook)
-    }
 }
 
 struct RemoveHooks {
@@ -98,11 +93,11 @@ fn audit(source: &Path, stage: &Path, bundle: &Path, file: &str, kind: &str) -> 
             }
         }).collect();
         if modules.len() != 1 {
-            return Err("Expected exactly one foundation module".into());
+            return Err("Expected exactly one bundle module".into());
         }
         let Item::Mod(module) = generated.items.remove(modules[0]) else { unreachable!() };
         let Some((_, items)) = module.content else {
-            return Err("Expected an inline foundation module".into());
+            return Err("Expected an inline bundle module".into());
         };
         if items.len() != runtime.items.len()
             || items.iter().zip(&runtime.items).any(|(a, b)| item_text(a) != item_text(b))
@@ -116,7 +111,7 @@ fn audit(source: &Path, stage: &Path, bundle: &Path, file: &str, kind: &str) -> 
             return Err(format!("Generated module {name} differs from bundle source (item {mismatch:?})").into());
         }
         }
-        vec![ExpectedHook::cancelling(bundle, "use_hand", "use_hand.rs", "use_hand(&mut *self, block_hit)")?]
+        Vec::new()
     } else if kind == "native" {
         vec![
             ExpectedHook::load(bundle, "native_tick", "startup.rs", "startup(&*self)")?,
@@ -133,9 +128,27 @@ fn audit(source: &Path, stage: &Path, bundle: &Path, file: &str, kind: &str) -> 
                 "settings_click.rs",
                 "settings_click(&mut *self, mod_id, button)",
             )?,
+            ExpectedHook::load(
+                bundle,
+                "native_use_item_on",
+                "use_item_on.rs",
+                "use_item_on(&mut *self, pos, claimed)",
+            )?,
+            ExpectedHook::load(
+                bundle,
+                "native_use_item",
+                "use_item.rs",
+                "use_item(&*self, claimed)",
+            )?,
+            ExpectedHook::load(
+                bundle,
+                "native_right_click_block",
+                "right_click_block.rs",
+                "right_click_block(&mut *self, pos, canceled)",
+            )?,
         ]
     } else {
-        vec![ExpectedHook::cancelling(bundle, "remote_block_reacts", "client_reacts.rs", "client_reacts(&*self, hit)")?]
+        return Err(format!("Unknown audit kind: {kind}").into());
     };
     let mut visitor = RemoveHooks { hooks, error: None };
     visitor.visit_file_mut(&mut generated);
@@ -154,12 +167,11 @@ fn audit(source: &Path, stage: &Path, bundle: &Path, file: &str, kind: &str) -> 
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
-    if args.len() != 3 { return Err("Usage: audit-foundation SOURCE STAGE BUNDLE".into()); }
+    if args.len() != 3 { return Err("Usage: audit-bundle SOURCE STAGE BUNDLE".into()); }
     let (source, stage, bundle) = (Path::new(&args[0]), Path::new(&args[1]), Path::new(&args[2]));
     audit(source, stage, bundle, "crates/horizon-client/src/game.rs", "game")?;
     audit(source, stage, bundle, "crates/horizon-client/src/game/native_hooks.rs", "native")?;
-    audit(source, stage, bundle, "crates/horizon-client/src/game/remote.rs", "remote")?;
-    println!("Verified six declared heads and two unchanged support modules.");
+    println!("Verified seven declared native-hook heads and two unchanged support modules.");
     Ok(())
 }
 

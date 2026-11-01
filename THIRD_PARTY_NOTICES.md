@@ -1,6 +1,6 @@
 # Third-party notices
 
-The project's own code license has not been selected. The following notice covers the GitHub Spec Kit templates and command files when installed into this repository. It does not grant a license to unrelated project content.
+The project's original code and documentation are licensed under the MIT License in `LICENSE`. The following notice covers the GitHub Spec Kit templates and command files installed in this repository.
 
 ## GitHub Spec Kit
 

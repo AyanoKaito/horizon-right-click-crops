@@ -28,7 +28,7 @@ $env:CARGO_BUILD_JOBS = '4'
 $env:HORIZON_LAUNCHER_NO_SELF_UPDATE = '1'
 $env:HORIZON_NO_AUDIO = '1'
 
-$scratch = Join-Path $projectRoot '.local\wheat-test-environment'
+$scratch = Join-Path $projectRoot '.local\native-test-environment'
 $env:HORIZON_HOME = Join-Path $scratch 'game'
 $env:HORIZON_LAUNCHER_HOME = Join-Path $scratch 'launcher'
 $env:XDG_DATA_HOME = Join-Path $scratch 'xdg-data'

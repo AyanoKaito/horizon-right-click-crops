@@ -1,7 +1,6 @@
-# Dependency-free foundation lockfile, prepared without running Cargo.
-# Validate with a locked Cargo run after compilation is approved.
+# Dependency-free project lockfile.
 version = 4
 
 [[package]]
 name = "horizon-right-click-crops"
-version = "0.1.0-dev.9"
+version = "1.0.0"

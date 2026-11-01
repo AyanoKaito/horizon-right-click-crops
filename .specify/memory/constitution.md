@@ -4,9 +4,9 @@
 
 ## Core principles
 
-### I. One mechanic, a small first proof
+### I. One mechanic, a focused mod
 
-Build mature-crop harvesting by right-click with paid replanting. Do not turn the project into a pack of unrelated conveniences. The first gameplay prototype covers wheat only. Full requirements are in `docs/requirements.md`.
+Build mature-plant harvesting by right-click with paid replanting. Do not turn the project into a pack of unrelated conveniences. The exact managed plants and release behaviour are defined in `docs/requirements.md`.
 
 ### II. Native integration, not a gameplay bypass
 
@@ -26,10 +26,10 @@ Explain decisions to the user in plain Russian; use English for all Git-tracked 
 
 ## Review gates
 
-Requirements -> approved technical plan -> testable tasks -> implementation -> verification report. Spec Kit stores artifacts but replaces neither approval nor testing. Do not execute every phase automatically. First validate a native foundation with isolated data, then wheat; expand only after acceptance.
+Requirements -> approved technical plan -> testable tasks -> implementation -> verification report. Spec Kit stores artifacts but replaces neither approval nor testing. Do not execute every phase automatically. Validate structural integration, native compilation and isolated gameplay separately before release.
 
 ## Governance
 
 Do not silently change requirements or approval status. Record decisions and reasons in `docs/decisions.md`, working commands in `docs/development.md`, and concise agent rules in `AGENTS.md`. These principles do not override the user's constraints or upstream instructions. Do not rewrite published Git history without separate approval.
 
-**Draft version:** 0.1.1 | **Prepared:** 2026-10-29 | **Last amended:** 2026-10-29
+**Draft version:** 1.0.0 | **Prepared:** 2026-10-29 | **Last amended:** 2026-10-31

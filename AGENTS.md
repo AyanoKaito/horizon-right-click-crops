@@ -20,6 +20,6 @@
 - Expected harvest failures must leave the crop and inventory unchanged; do not crash the game for ordinary failures.
 - Compilation is not gameplay verification. Report tests actually run, skipped tests and remaining limitations separately.
 - Compatibility and supported plants are promises only after validation; do not claim generic support for all mods/platforms.
-- The mod's license is pending. Preserve third-party notices and ask before borrowing code, assets or publishing a port.
+- The project's original code and documentation are MIT-licensed. Preserve third-party notices and ask before borrowing code, assets or publishing a port.
 - Do not create releases, push to a different repository, make the repository public, or send public messages without authorization.
 - Never set a global Git identity or bypass user commit-signing/hooks to make setup pass.

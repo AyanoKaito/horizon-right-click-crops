@@ -1,6 +1,6 @@
 [package]
-name = "audit-right-click-crops-foundation"
-version = "0.1.0"
+name = "audit-right-click-crops-bundle"
+version = "1.0.0"
 edition = "2024"
 publish = false
 
