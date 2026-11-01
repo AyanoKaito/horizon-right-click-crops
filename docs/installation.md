@@ -6,6 +6,16 @@ Download `right_click_crops-1.0.0.hnmod` from the [official 1.0.0 release](https
 
 Official repository: <https://github.com/AyanoKaito/horizon-right-click-crops>
 
+### Verify the signature
+
+The release also provides `right_click_crops-1.0.0.hnmod.minisig` and `right-click-crops.pub`. Download them beside the `.hnmod` and verify with [Minisign](https://jedisct1.github.io/minisign/):
+
+```powershell
+minisign -V -p right-click-crops.pub -m right_click_crops-1.0.0.hnmod
+```
+
+The expected success message is `Signature and comment signature verified`. These verification files are public; no secret key or password is needed. A valid signature proves the package was signed by the matching key, not that its code is harmless. For protection against a compromised download source, compare the public key with a previously trusted copy or the reviewed registry entry when available.
+
 ## Horizon launcher
 
 Horizon native mods run as native code with the player's privileges. Read the source and accept Horizon's trust warning only if you trust this project.
