@@ -19,7 +19,7 @@
   <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.0"><strong>Download</strong></a> &middot;
   <a href="docs/installation.md">Installation</a> &middot;
   <a href="docs/settings.md">Settings</a> &middot;
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/download/v1.0.0/Right-Click-Crops-Demo.mp4">Watch demo</a>
+  <a href="https://youtu.be/kll-qvj5s54">Watch demo</a>
 </p>
 
 <p align="center">
@@ -40,6 +40,12 @@
 - Leave immature plants, bone meal, ordinary left-click breaking, sweet berries, glow berries and unrelated interactions to Horizon.
 
 The mod handles one targeted plant at a time. It does not add area harvesting, bonus loot, hunger costs or experience costs.
+
+## Demo
+
+[![Watch the Right-Click Crops gameplay and settings demo on YouTube](https://img.youtube.com/vi/kll-qvj5s54/hqdefault.jpg)](https://youtu.be/kll-qvj5s54)
+
+[Watch on YouTube](https://youtu.be/kll-qvj5s54) — harvesting, replanting and individual plant settings.
 
 ## Supported plants
 
