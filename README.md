@@ -1,10 +1,33 @@
-# Right-Click Crops
+<p align="center">
+  <img src="assets/crop.png" width="160" alt="Right-Click Crops logo by AyanoKaito">
+</p>
 
-<img src="assets/crop.png" width="160" alt="Right-Click Crops logo by AyanoKaito">
+<h1 align="center">Right-Click Crops</h1>
 
-A native Horizon mod that harvests mature plants with right-click, replants when appropriate, and gives each managed plant its own setting.
+<p align="center">
+  <strong>Harvest with a right-click. Keep your garden growing.</strong><br>
+  A native Horizon mod with sixteen plant families and individual settings.
+</p>
 
-> Version `1.0.0` targets Horizon Nightly `2026-10-31` (`9d979ca`) and Minecraft: Java Edition 26.3.
+<p align="center">
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0-4c8c4a" alt="Release v1.0.0"></a>
+  <a href="docs/multiplayer.md"><img src="https://img.shields.io/badge/Minecraft-26.3-6b7280" alt="Minecraft Java Edition 26.3"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c8c4a" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.0"><strong>Download</strong></a> &middot;
+  <a href="docs/installation.md">Installation</a> &middot;
+  <a href="docs/settings.md">Settings</a> &middot;
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/download/v1.0.0/Right-Click-Crops-Demo.mp4">Watch demo</a>
+</p>
+
+<p align="center">
+  Built for Horizon Nightly <code>2026-10-31</code> (<code>9d979ca</code>).<br>
+  Validated in single-player and LAN host/guest sessions.
+</p>
+
+---
 
 ## Features
 
