@@ -22,6 +22,18 @@ The current code enters gameplay through `native_use_item_on` for held-item clic
 
 The offhand regression uses a snowball as a measurable used item, not as a new mod feature: in survival, right-click mature wheat with an empty main hand and four snowballs in the off hand. The crop becomes `wheat[age=0]`; the snowball stack remains **4**. The first attempt exposed an unintended `4 -> 3` throw; the corrected candidate passed in single-player and separately for the LAN host and LAN guest. The LAN checks also covered empty-hand harvest, a held stick, bone meal in either hand, and matching crop states on both clients. Test fixtures used creative commands and disabled block drops; each harvest assertion ran in survival. This does not prove a no-cheats or non-operator LAN session.
 
+## Registry preparation: newest Nightly compilation check
+
+The newest Nightly source tag checked on 2026-11-01 was `nightly-source/2026-10-31-d91cab6`, commit `d91cab68ded29bd2b004f7050c468fb98c41a00b` (native hooks API 42).
+
+In an isolated copy of the release bundle, only `compatibility.horizon_revision` was changed to that commit. All other bundle files were byte-identical to the release sources. With the release-pinned horizon-mixins revision:
+
+- Apply passed: seven hooks, two modules.
+- AST preservation audit passed for `game.rs` and `game/native_hooks.rs`.
+- `cargo check --locked --offline -p horizon-client --bin horizon-client` passed using Rust 1.99.1 on `x86_64-pc-windows-gnu`.
+
+The first compilation command timed out before completion; the cached retry finished successfully. This is a compilation check, not a linked executable build or gameplay validation on `d91cab6`. No gameplay changes were required. The published `1.0.0` bundle, SHA-256 and exact `9d979ca` installation pin remain unchanged; this experiment does not broaden their compatibility contract.
+
 ## Follow-up: Nether vine loot
 
 On the same `9d979ca` release build, `tools/test_nether_vine_loot.py` passed 32 isolated survival harvests: eight per vine/tool combination. Each fixture had three connected blocks; harvest retained one live anchor and removed two blocks. Creative commands prepared fixtures; block drops were enabled, random ticks were disabled, and both the action and assertions ran in survival. Neighbouring vines, inventory and the retained anchor were checked each time.
