@@ -35,7 +35,7 @@ On Windows, `tools/Enter-NativeBuildEnvironment.ps1` can optionally reuse the to
 
 Some launch/setup and focused regression harnesses used for the release remain local. The published scripts alone do not reproduce the complete validation campaign; see [Validation](../VALIDATION.md) for the scope of the recorded evidence.
 
-Product behaviour is defined in [Requirements](requirements.md), with rationale in [Decisions](decisions.md). Player-facing guides cover [installation](installation.md), [settings](settings.md) and [multiplayer compatibility](multiplayer.md).
+Product behaviour is defined in [Requirements](requirements.md), with rationale in [Decisions](decisions.md). Player-facing guides cover [harvest rules and drop chances](harvesting.md), [installation](installation.md), [settings](settings.md) and [multiplayer compatibility](multiplayer.md).
 
 ## Boundaries
 
