@@ -2,6 +2,11 @@
 
 All notable changes to Right-Click Crops are documented here.
 
+## Unreleased
+
+- Updated the project icon with author-approved Gemini-generated artwork and documented its provenance.
+- Added focused empty-hand and shears loot checks for twisting and weeping vines, and clarified ordinary vine drops and flower replanting requirements.
+
 ## 1.0.0 - 2026-11-01
 
 - Added right-click harvesting for sixteen explicit plant families.

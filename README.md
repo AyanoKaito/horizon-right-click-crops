@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/crop.png" width="160" alt="Right-Click Crops logo by AyanoKaito">
+  <img src="assets/crop.png" width="160" alt="Right-Click Crops icon generated with Google Gemini">
 </p>
 
 <h1 align="center">Right-Click Crops</h1>
@@ -58,6 +58,8 @@ The mod handles one targeted plant at a time. It does not add area harvesting, b
 
 Plants outside this list pass through unchanged. Compatibility with arbitrary crops from other mods is not claimed.
 
+Twisting and weeping vines keep ordinary loot rules: an empty-hand harvest can yield nothing (33% per removed block). Shears guarantee the vine drops. Torchflower and pitcher crop need spare torchflower seeds or pitcher pods in your inventory to replant; their mature products are not planting items.
+
 ## Installation
 
 Download `right_click_crops-1.0.0.hnmod` from the official GitHub Release, or use the launcher's **Add from GitHub** with this repository. Horizon native mods run with the player's privileges and are compiled into a separate game build only after the player accepts Horizon's native-code warning.
@@ -80,6 +82,8 @@ The official repository is <https://github.com/AyanoKaito/horizon-right-click-cr
 Right-Click Crops is an original Horizon implementation, not a port. No gameplay code from other harvest mods was used. Similar projects were reviewed only to understand common player expectations and define scope.
 
 Development was AI-assisted under human direction. AI tooling contributed to implementation, test harnesses and documentation; only checks that were actually run are reported as evidence.
+
+The project icon was generated with Google Gemini (Nano Banana) under AyanoKaito's direction. Its provenance and licensing scope are recorded in [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## License
 

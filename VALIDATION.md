@@ -22,6 +22,19 @@ The current code enters gameplay through `native_use_item_on` for held-item clic
 
 The offhand regression uses a snowball as a measurable used item, not as a new mod feature: in survival, right-click mature wheat with an empty main hand and four snowballs in the off hand. The crop becomes `wheat[age=0]`; the snowball stack remains **4**. The first attempt exposed an unintended `4 -> 3` throw; the corrected candidate passed in single-player and separately for the LAN host and LAN guest. The LAN checks also covered empty-hand harvest, a held stick, bone meal in either hand, and matching crop states on both clients. Test fixtures used creative commands and disabled block drops; each harvest assertion ran in survival. This does not prove a no-cheats or non-operator LAN session.
 
+## Follow-up: Nether vine loot
+
+On the same `9d979ca` release build, `tools/test_nether_vine_loot.py` passed 32 isolated survival harvests: eight per vine/tool combination. Each fixture had three connected blocks; harvest retained one live anchor and removed two blocks. Creative commands prepared fixtures; block drops were enabled, random ticks were disabled, and both the action and assertions ran in survival. Neighbouring vines, inventory and the retained anchor were checked each time.
+
+| Vine | Main hand | Harvests | Items from 16 removed blocks | Harvests with no drops |
+|---|---|---|---|---|
+| Twisting vines | Empty | 8 | 8 | 2 |
+| Twisting vines | Shears | 8 | 16 | 0 |
+| Weeping vines | Empty | 8 | 7 | 4 |
+| Weeping vines | Shears | 8 | 16 | 0 |
+
+The prepared resource loot tables for both vine heads and bodies specify a 0.33 chance without an applicable tool/enchantment, or guaranteed drops with shears/Silk Touch. Fortune I/II/III specify 0.55/0.77/1.0. This follow-up tested only empty hand and plain shears; enchantments were not retested. The small random sample is not a statistical verification of the table's probability. No gameplay code was changed.
+
 ## Earlier gameplay evidence
 
 The previous development pin (`64e2989`) was tested in isolated single-player worlds. Those runs covered all sixteen managed plant families, ordinary sweet/glow berry preservation, settings UI and persistence, loot-funded and inventory-funded replanting, no-material harvest, held clicks, bone meal passthrough, save/reopen behaviour, removal/disable behaviour and selected ordinary-loot comparisons.

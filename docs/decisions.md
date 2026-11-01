@@ -18,3 +18,4 @@
 - Dedicated support is not advertised until Horizon builds native mods for its dedicated distribution path and the mod passes that environment.
 - The demonstration is one combined video: static grey title card, centred labels, complete plants and retained sections visible, shorter plant segments, then a brief settings-menu view.
 - The project is AI-assisted under human direction. Validation reports contain only tests that were actually run.
+- The current project icon was generated with Google Gemini (Nano Banana) under AyanoKaito's direction and approved for use in the repository, release artwork and registry submission. It is distributed under MIT to the extent of the project's rights; provenance is recorded in `THIRD_PARTY_NOTICES.md`. The demonstration thumbnail remains based on actual gameplay footage, not the icon.
