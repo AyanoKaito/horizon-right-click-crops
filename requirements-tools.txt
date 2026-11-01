@@ -1,3 +1,0 @@
-# Official GitHub Spec Kit CLI; isolated under .tools/spec-kit/.
-# This is development tooling, not a runtime dependency of the game mod.
-specify-cli==1.2.5

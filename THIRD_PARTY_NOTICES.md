@@ -1,6 +1,6 @@
 # Third-party notices
 
-The project's original code and documentation are licensed under the MIT License in `LICENSE`. The following notice covers the GitHub Spec Kit templates and command files installed in this repository.
+The project's original code and documentation are licensed under the MIT License in `LICENSE`. The following notice is retained for the GitHub Spec Kit templates and command files distributed in earlier repository revisions. Those development-only files are no longer part of the current source tree or mod package.
 
 ## GitHub Spec Kit
 

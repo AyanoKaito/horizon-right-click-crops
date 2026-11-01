@@ -39,7 +39,7 @@ class BundleSourceTests(unittest.TestCase):
 
     def test_mixins_pin_and_validation_status_are_explicit(self):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
-        self.assertEqual(self.compatibility["status"], "release-validation-in-progress")
+        self.assertEqual(self.compatibility["status"], "released")
         self.assertEqual(self.compatibility["horizon_hooks_api"], 40)
         self.assertEqual(self.compatibility["mixin_schema"], 6)
         self.assertEqual(

@@ -2,7 +2,7 @@
 
 This file records checks that were actually run. Compilation and structural checks are not presented as gameplay proof.
 
-## Current 1.0.0 release candidate
+## Published 1.0.0 release
 
 Target: Minecraft 26.3 on Horizon Nightly `2026-10-31` (`9d979ca`).
 

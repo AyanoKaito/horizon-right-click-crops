@@ -1,4 +1,7 @@
 # Local tools and Python environments
+.opencode/
+.specify/
+requirements-tools.txt
 .tools/
 .venv/
 __pycache__/
