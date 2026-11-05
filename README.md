@@ -16,6 +16,7 @@
 </p>
 
 <p align="center">
+  <a href="https://playhorizon.dev/mods/right_click_crops">Horizon</a> &middot;
   <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.0"><strong>Download</strong></a> &middot;
   <a href="docs/installation.md">Installation</a> &middot;
   <a href="docs/settings.md">Settings</a> &middot;
