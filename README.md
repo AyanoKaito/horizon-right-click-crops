@@ -41,8 +41,6 @@
 
 Plants outside this list pass through unchanged. Compatibility with arbitrary crops from other mods is not claimed.
 
-Twisting and weeping vines keep ordinary loot rules: an empty-hand harvest can yield nothing (33% per removed block). Shears guarantee the vine drops. Torchflower and pitcher crop need spare torchflower seeds or pitcher pods in your inventory to replant; their mature products are not planting items.
-
 See the **[Harvesting guide](docs/harvesting.md)** for planting materials, retained bases and stems, vine drop chances, and reasons a click may not harvest or replant.
 
 ## Features
