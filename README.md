@@ -70,7 +70,7 @@ See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Comp
 
 ## Compatibility
 
-- Compatibility last reviewed on **November 1, 2026**, for Minecraft 26.3.
+- Compatibility last reviewed on **November 7, 2026**, for Minecraft 26.3.
 - The gameplay entrypoints run on the authoritative server path used by single-player, LAN hosts and LAN guests.
 - Single-player and LAN host/guest checks passed on the release's pinned Horizon. See [Validation](VALIDATION.md) for the exact revisions and results.
 - Horizon does not yet build native mods through its player-ready dedicated-server pipeline. Dedicated support is therefore not advertised.
