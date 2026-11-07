@@ -2,7 +2,7 @@
 
 This file records checks that were actually run. Compilation and structural checks are not presented as gameplay proof.
 
-## 1.0.1 patch candidate
+## Published 1.0.1 release
 
 Target: Minecraft 26.3 on Horizon Nightly `2026-11-05` (`66f3981`, native hooks API 411). Checked on 2026-11-07.
 
