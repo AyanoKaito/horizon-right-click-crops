@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  Last updated and checked: <strong>November 1, 2026</strong>.<br>
+  Last updated and checked: <strong>November 7, 2026</strong>.<br>
   See the compatibility notes below for the scope of testing.
 </p>
 
