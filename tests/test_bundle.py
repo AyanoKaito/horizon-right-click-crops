@@ -9,7 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "mixins" / "right_click_crops"
-HORIZON_REVISION = "9d979caa48a3bb58203319b9ea044db58c38e0d8"
+HORIZON_REVISION = "66f3981f522b24c250b21523a70080965b940424"
 MIXINS_REVISION = "4342a0bfbe71d4d14185528d64e496d6022f16a1"
 
 
@@ -34,13 +34,13 @@ class BundleSourceTests(unittest.TestCase):
         )
         self.assertEqual(
             self.compatibility["horizon_source_tag"],
-            "nightly-source/2026-10-31-9d979ca",
+            "nightly-source/2026-11-05-66f3981",
         )
 
     def test_mixins_pin_and_validation_status_are_explicit(self):
         self.assertEqual(self.compatibility["horizon_mixins_revision"], MIXINS_REVISION)
-        self.assertEqual(self.compatibility["status"], "released")
-        self.assertEqual(self.compatibility["horizon_hooks_api"], 40)
+        self.assertIn(self.compatibility["status"], ("candidate", "released"))
+        self.assertEqual(self.compatibility["horizon_hooks_api"], 411)
         self.assertEqual(self.compatibility["mixin_schema"], 6)
         self.assertEqual(
             self.compatibility["hook_policy"],
@@ -48,7 +48,7 @@ class BundleSourceTests(unittest.TestCase):
         )
         self.assertEqual(
             self.compatibility["validation"]["native_build"],
-            "passed-approved-isolated-offline-fast",
+            "passed-approved-isolated-dev-profile",
         )
 
     def test_package_and_bundle_versions_agree(self):

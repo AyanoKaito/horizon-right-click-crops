@@ -3,7 +3,7 @@ use std::sync::{OnceLock, atomic::{AtomicBool, AtomicU32, Ordering}};
 
 pub const MOD_ID: &str = "right_click_crops";
 pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "1.0.0";
+pub const MOD_VERSION: &str = "1.0.1";
 pub const MOD_DESCRIPTION: &str = "Survival harvesting with individual settings for sixteen plant families.";
 pub const STARTUP_MESSAGE: &str = "[right_click_crops] Plant settings apply immediately; the global mod toggle requires a full game restart.";
 pub const CONFIG_FILE: &str = "plants.conf";

@@ -2,6 +2,35 @@
 
 This file records checks that were actually run. Compilation and structural checks are not presented as gameplay proof.
 
+## 1.0.1 patch candidate
+
+Target: Minecraft 26.3 on Horizon Nightly `2026-11-05` (`66f3981`, native hooks API 411). Checked on 2026-11-07.
+
+Horizon `66f3981` added a block-entity argument to the internal block loot helper, which broke compilation of `1.0.0` (`E0061`). The patch passes no block entity: the managed plants have none. No other gameplay code changed.
+
+| Check | Result |
+|---|---|
+| Standalone Rust tests | Passed: 16 |
+| Python structural and observation tests | Passed: 28 |
+| horizon-mixins 0.6.0 plan/apply (`4342a0b`) | Passed: 7 hooks, 2 modules |
+| Generated-source AST preservation audit | `native_hooks.rs` passed. In `game.rs`, both bundle modules match the bundle source; the remaining tree differs from pristine source only in `unstuck_orb`, where the transformer's reprint wraps one upstream closure body in braces (`|s| s.moved(..)` became `|s| { s.moved(..) }`). Semantics are unchanged; the audit tool reports this file as not preserved. |
+| Native Horizon build | Passed: approved isolated build matching the launcher's Dev build (`cargo build --locked --offline --profile fast --config profile.fast.package.horizon-client.opt-level=0 -p horizon-client --bin horizon-client`). Horizon `66f3981` no longer has the `horizon-client/mods` feature, so it was not passed. |
+| Single-player wheat | Passed: 6 payment and loot slices, 8 interaction checks, and the offhand snowball regression (crop `wheat[age=0]`, snowballs stay at 4) |
+| Single-player plant groups | Passed: 97 checks across all 16 managed families and ordinary sweet/glow berries (field crops 24, wart/cocoa 16, flower crops 14, vertical plants 13, kelp/vines 13, stem fruits 10, berries 7) |
+| LAN host and guest gameplay | Passed: 10 wheat cases (5 per actor) |
+| Dedicated server | Not claimed |
+
+Game runs used the official `horizon-ctl` and prepared 26.3 resources of the installed `66f3981` Nightly read-only, with isolated homes and test worlds.
+
+Harness notes: in three full plant-sequence sessions, three checks failed for reasons outside the mod, and each was rerun.
+
+- `melon-linked: clean inventory and ground` (once): two `twisting_vines` items from the preceding vine test landed during fixture setup, before any click.
+- `pitcher: repeat` (twice): the first harvest's `pitcher_plant` item rolled to within pickup range of the test player (x 1.25 and 1.65; player at x 0.5) and was picked up before the repeat assertion compared ground and inventory. Both times the crop stayed `pitcher_crop[age=0,half=lower]` and no pod was charged.
+
+The stem-fruit script then passed alone, and the flower-crop script passed alone twice. The 97-check total combines a full session in which the other six scripts passed with those standalone flower-crop passes.
+
+`tools/package.py` produced `right_click_crops-1.0.1.hnmod` (11 files, the same entry names as `1.0.0`) with SHA-256 `e369d9cb34320144d805d02f162a3ed357b9cf8bbeee457e409cedc0b7e63d0a`. A second build was byte-identical. Its bundle sources are byte-identical to the sources validated above. The manifest was checked against the field rules of Horizon `66f3981`'s native `Manifest`. Horizon's own bundle reader was not run for this candidate. The author's Minisign signature verifies against `right-click-crops.pub`.
+
 ## Published 1.0.0 release
 
 Target: Minecraft 26.3 on Horizon Nightly `2026-10-31` (`9d979ca`).

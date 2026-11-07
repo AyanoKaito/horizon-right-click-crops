@@ -1,12 +1,12 @@
 # Right-Click Crops requirements
 
-This is the current product contract for version `1.0.0`. Behaviour changes require approval.
+This is the current product contract for version `1.0.1`. Behaviour changes require approval.
 
 ## Scope
 
 - The project is a small independent Horizon native mod with one mechanic.
 - It is an original implementation, not a port, and does not use gameplay code from other harvest mods.
-- Version `1.0.0` targets the latest Nightly selected for release and Minecraft 26.3.
+- Version `1.0.1` targets the latest Nightly selected for release and Minecraft 26.3.
 - Support is advertised only for environments that pass actual gameplay validation.
 
 ## Managed plants

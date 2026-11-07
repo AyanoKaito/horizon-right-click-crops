@@ -10,14 +10,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0-4c8c4a" alt="Release v1.0.0"></a>
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.1"><img src="https://img.shields.io/badge/release-v1.0.1-4c8c4a" alt="Release v1.0.1"></a>
   <a href="docs/multiplayer.md"><img src="https://img.shields.io/badge/Minecraft-26.3-6b7280" alt="Minecraft Java Edition 26.3"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c8c4a" alt="MIT License"></a>
 </p>
 
 <p align="center">
   <a href="https://playhorizon.dev/mods/right_click_crops">Horizon page</a> &middot;
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.0"><strong>Download</strong></a> &middot;
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.1"><strong>Download</strong></a> &middot;
   <a href="docs/installation.md">Installation</a> &middot;
   <a href="docs/settings.md">Settings</a> &middot;
   <a href="https://youtu.be/kll-qvj5s54">Watch demo</a>
@@ -64,7 +64,7 @@ The mod handles one targeted plant at a time. It does not add area harvesting, b
 
 ## Installation
 
-Download `right_click_crops-1.0.0.hnmod` from the official GitHub Release, or use the launcher's **Add from GitHub** with this repository. Horizon native mods run with the player's privileges and are compiled into a separate game build only after the player accepts Horizon's native-code warning.
+Download `right_click_crops-1.0.1.hnmod` from the official GitHub Release, or use the launcher's **Add from GitHub** with this repository. Horizon native mods run with the player's privileges and are compiled into a separate game build only after the player accepts Horizon's native-code warning.
 
 See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Compatibility](docs/multiplayer.md) for the current details.
 
@@ -72,7 +72,7 @@ See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Comp
 
 - Compatibility last reviewed on **November 1, 2026**, for Minecraft 26.3.
 - The gameplay entrypoints run on the authoritative server path used by single-player, LAN hosts and LAN guests.
-- Single-player and LAN host/guest checks passed on the release's pinned Horizon. A compilation check also passed on the latest Horizon Nightly available on that date; gameplay on that newer revision was not tested. See [Validation](VALIDATION.md) for the exact revisions and results.
+- Single-player and LAN host/guest checks passed on the release's pinned Horizon. See [Validation](VALIDATION.md) for the exact revisions and results.
 - Horizon does not yet build native mods through its player-ready dedicated-server pipeline. Dedicated support is therefore not advertised.
 
 Native mods are revision-pinned. A future incompatible Horizon Nightly may require a Right-Click Crops patch release.

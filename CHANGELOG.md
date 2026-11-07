@@ -2,8 +2,11 @@
 
 All notable changes to Right-Click Crops are documented here.
 
-## Unreleased
+## 1.0.1 - 2026-11-07
 
+- Fixed compilation on Horizon Nightly `2026-11-05` (`66f3981`): Horizon's block loot helper now takes the broken block's entity data. Managed plants have no block entity, so harvest passes none and loot is unchanged.
+- Updated the compatibility pin to Horizon Nightly `2026-11-05` (`66f3981`, native hooks API 411).
+- Bumped the version to `1.0.1`.
 - Updated the project icon with author-approved Gemini-generated artwork and documented its provenance.
 - Added focused empty-hand and shears loot checks for twisting and weeping vines, and clarified ordinary vine drops and flower replanting requirements.
 

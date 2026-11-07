@@ -4,8 +4,8 @@ Right-Click Crops is a dependency-free Rust core plus a native `horizon-mixins` 
 
 ## Release pins
 
-- Horizon: `9d979caa48a3bb58203319b9ea044db58c38e0d8`
-- Horizon source tag: `nightly-source/2026-10-31-9d979ca`
+- Horizon: `66f3981f522b24c250b21523a70080965b940424`
+- Horizon source tag: `nightly-source/2026-11-05-66f3981`
 - horizon-mixins: `4342a0bfbe71d4d14185528d64e496d6022f16a1`
 - Rust used by Horizon: 1.99.1, `x86_64-pc-windows-gnu`
 

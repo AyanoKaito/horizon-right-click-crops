@@ -1,6 +1,6 @@
 # Harvesting guide
 
-Right-Click Crops changes how you harvest, not the game's loot tables. The notes below describe version `1.0.0` on its [tested Horizon revision](../VALIDATION.md).
+Right-Click Crops changes how you harvest, not the game's loot tables. The notes below describe version `1.0.1` on its [tested Horizon revision](../VALIDATION.md).
 
 ## The short version
 

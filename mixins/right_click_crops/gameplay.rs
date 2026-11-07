@@ -173,7 +173,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: [i32; 3]) -> horizon_client::Res
             let mut loot = Vec::new();
             if game.ui.rules.bool("block_drops") {
                 for (pos, state) in &column.blocks {
-                    loot.extend(game.block_loot_at(*pos, *state, held.as_ref()));
+                    loot.extend(game.block_loot_at(*pos, *state, held.as_ref(), None));
                 }
             }
             let written = game.with_level(|b, level, ticks| {
@@ -203,7 +203,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: [i32; 3]) -> horizon_client::Res
         Target::Fruit(fruit) => {
             let held = game.held().cloned();
             let loot = if game.ui.rules.bool("block_drops") {
-                game.block_loot_at(fruit.pos, fruit.state, held.as_ref())
+                game.block_loot_at(fruit.pos, fruit.state, held.as_ref(), None)
             } else {
                 Vec::new()
             };
@@ -240,7 +240,7 @@ pub(super) fn harvest(game: &mut Game<'_>, hit: [i32; 3]) -> horizon_client::Res
     }
     let held = game.held().cloned();
     let mut loot = if game.ui.rules.bool("block_drops") {
-        game.block_loot_at(pos, state, held.as_ref())
+        game.block_loot_at(pos, state, held.as_ref(), None)
     } else {
         Vec::new()
     };

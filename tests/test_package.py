@@ -19,7 +19,7 @@ class PackageTests(unittest.TestCase):
         _, _, manifest = PACKAGE.metadata(ROOT)
         self.assertEqual(manifest["schema"], 1)
         self.assertEqual(manifest["id"], "right_click_crops")
-        self.assertEqual(manifest["version"], "1.0.0")
+        self.assertEqual(manifest["version"], "1.0.1")
         self.assertEqual(manifest["game"], "26.3")
         self.assertNotIn("hooks", manifest)
 
