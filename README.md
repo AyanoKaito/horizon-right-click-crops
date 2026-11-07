@@ -79,7 +79,7 @@ Native mods are revision-pinned. A future incompatible Horizon Nightly may requi
 
 ## Project integrity
 
-The official repository is <https://github.com/AyanoKaito/horizon-right-click-crops>. Third-party forks cannot change this repository or its releases. Verify release downloads against the SHA-256 value published with the official GitHub Release.
+The official repository is <https://github.com/AyanoKaito/horizon-right-click-crops>. Third-party forks cannot change this repository or its releases. Verify release downloads with their Minisign signature; see [Installation](docs/installation.md).
 
 Right-Click Crops is an original Horizon implementation, not a port. No gameplay code from other harvest mods was used. Similar projects were reviewed only to understand common player expectations and define scope.
 

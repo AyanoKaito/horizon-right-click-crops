@@ -4,7 +4,7 @@
 - The implementation remains a native `horizon-mixins` mod; it will not be silently replaced with a WASM project or built-in Horizon feature.
 - The first public version is `1.0.0` after release-pin and multiplayer validation.
 - Original project code and documentation use the MIT License. Third-party material keeps its own notice.
-- MIT permits forks but grants no write access to the official repository. Official packages come only from `AyanoKaito/horizon-right-click-crops` releases and include SHA-256 verification.
+- MIT permits forks but grants no write access to the official repository. Official packages come only from `AyanoKaito/horizon-right-click-crops` releases. Release assets are the `.hnmod` and its `.minisig`; the public key is published in the docs and the registry entry, and GitHub shows each asset's SHA-256.
 - Current documents are rewritten in place. Git history preserves superseded development stages; no additional history archive is maintained.
 - Gameplay uses Horizon's authoritative server hooks so the acting LAN guest, not only the world owner, can trigger harvest logic.
 - Loot pays for replanting before inventory; missing material does not cancel harvest.
