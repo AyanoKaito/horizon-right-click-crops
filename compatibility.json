@@ -1,25 +1,20 @@
 {
-  "status": "released",
+  "status": "candidate",
+  "version": "2.0.0",
   "minecraft_version": "26.3",
   "horizon_repository": "https://github.com/horizon-rust/horizon",
-  "horizon_revision": "66f3981f522b24c250b21523a70080965b940424",
-  "horizon_source_tag": "nightly-source/2026-11-05-66f3981",
-  "horizon_hooks_api": 411,
-  "horizon_mixins_repository": "https://github.com/horizon-rust/horizon-mixins",
-  "horizon_mixins_revision": "4342a0bfbe71d4d14185528d64e496d6022f16a1",
-  "mixin_schema": 6,
-  "hook_policy": "server-hook-entrypoints-with-exact-nightly-pin",
+  "mod_kind": "wasm",
+  "horizon_sdk": "0b14f8acfd97fa2c750e42795249dcc981178ca4",
+  "mod_api": "0.2",
   "intended_rust_version": "1.99.1",
-  "intended_host": "x86_64-pc-windows-gnu",
+  "build_host": "ubuntu-24.04 (GitHub Actions)",
   "validation": {
-    "standalone_rust_tests": "16-passed",
-    "python_tests": "28-passed",
-    "mixin_plan": "passed-7-hooks-2-modules",
-    "source_ast_audit": "native-hooks-passed;game-bundle-modules-identical;one-upstream-closure-reprint-difference",
-    "native_build": "passed-approved-isolated-dev-profile",
-    "single_player": "wheat-6-slices-8-interactions-offhand-and-97-plant-group-checks-passed",
-    "lan_host_guest": "10-wheat-cases-passed-5-per-actor",
-    "dedicated_server": "not-claimed;player-ready-native-installation-not-provided-by-horizon",
-    "previous_release_evidence": "1.0.0-passed-on-9d979caa48a3bb58203319b9ea044db58c38e0d8;see-git-history"
+    "unit_tests": "14-passed",
+    "wasm_build": "passed-ci",
+    "registry_check": "passed-ci",
+    "single_player": "not-run",
+    "lan_host_guest": "not-run",
+    "dedicated_server": "not-claimed",
+    "previous_release_evidence": "1.0.1-native-passed-on-66f3981f522b24c250b21523a70080965b940424;see-git-history"
   }
 }

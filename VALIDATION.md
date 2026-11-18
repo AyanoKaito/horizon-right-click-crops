@@ -2,6 +2,21 @@
 
 This file records checks that were actually run. Compilation and structural checks are not presented as gameplay proof.
 
+## 2.0.0 candidate (WebAssembly)
+
+Target: Minecraft 26.3, Horizon mod SDK `0b14f8acfd97fa2c750e42795249dcc981178ca4` (mod API 0.2). Checked on 2026-11-19.
+
+Version 2 is a rewrite for the mod SDK. The 1.x evidence below was gathered on native builds and does not cover it.
+
+| Check | Result |
+|---|---|
+| `cargo check` on Windows (Rust 1.99.1) | Passed, no warnings |
+| GitHub Actions on Ubuntu 24.04, commit `365f55a` | Passed: `cargo-horizon-mod` built at the SDK commit, `cargo horizon-mod build --wasm`, 14 unit tests, `cargo horizon-mod check` (the registry's checks) |
+| Package | `right_click_crops.hmod`, SHA-256 `7b294f74e738f234dfe13799474830d678f777345b4e5bc0281d99c1ba48652e` (CI artifact, not a release) |
+| Single-player gameplay | Not run yet |
+| LAN host and guest gameplay | Not run yet |
+| Dedicated server | Not claimed |
+
 ## Published 1.0.1 release
 
 Target: Minecraft 26.3 on Horizon Nightly `2026-11-05` (`66f3981`, native hooks API 411). Checked on 2026-11-07.

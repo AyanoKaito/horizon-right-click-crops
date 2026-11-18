@@ -1,46 +1,41 @@
 # Development
 
-Right-Click Crops is a dependency-free Rust core plus a native `horizon-mixins` bundle under `mixins/right_click_crops/`.
+Right-Click Crops is a Horizon mod SDK project (`horizon-mod.toml`, `Cargo.toml`, `src/`) built to `mod.wasm` and packed as a `.hmod`.
 
-## Release pins
+## Pins
 
-- Horizon: `66f3981f522b24c250b21523a70080965b940424`
-- Horizon source tag: `nightly-source/2026-11-05-66f3981`
-- horizon-mixins: `4342a0bfbe71d4d14185528d64e496d6022f16a1`
-- Rust used by Horizon: 1.99.1, `x86_64-pc-windows-gnu`
+- Horizon mod SDK: `0b14f8acfd97fa2c750e42795249dcc981178ca4` (`[package.metadata.horizon] sdk` in `Cargo.toml`), mod API 0.2
+- Rust used by Horizon: 1.99.1
 
-## Checks
+## Build
 
-These checks use a normal Rust toolchain and Python 3.11 or newer. Python tests and packaging use only the standard library; no Spec Kit or AI tooling is required.
+The release package is built by `.github/workflows/build.yml` on Ubuntu: SDK `0b14f8a` refuses WebAssembly built on Windows. The workflow builds `cargo-horizon-mod` from the Horizon repository at the SDK commit, then runs:
 
-```powershell
-cargo test --locked
-python -m unittest discover -s tests
-cargo test --locked --manifest-path tools\audit-bundle\Cargo.toml
-python tools\package.py
+```sh
+cargo horizon-mod build --wasm
+cargo test
+cargo horizon-mod check target/horizon-mod/right_click_crops.hmod
 ```
 
-The mixin plan and AST audit use pristine source in ignored `.local/` folders. A native Horizon build is a separate trust-gated step and must never be run without explicit approval.
+It uploads the `.hmod` as the `right_click_crops-hmod` artifact and writes its SHA-256 to the run summary. `cargo horizon-mod` places the SDK under ignored `.horizon/` and writes `mod.wasm` and the `[wasm]` table itself; do not edit `[wasm]` by hand.
 
-On Windows, `tools/Enter-NativeBuildEnvironment.ps1` can optionally reuse the toolchain installed by Horizon's launcher. Dot-source it before the checks if that toolchain is not already on `PATH`. It changes only the current shell's environment; it is not needed by players installing the release.
+On any platform, `cargo test` runs the unit tests in `src/core.rs` once the SDK is present under `.horizon/sdk/`. `python -m unittest discover -s tests` (Python 3.11 or newer) checks the loot comparison tool.
 
 ## Source and tools
 
-- `mixins/right_click_crops/`: native hooks, harvest logic, settings and standalone Rust tests.
-- `tests/`: Python checks for bundle structure, packaging and recorded-loot comparisons.
-- `tools/package.py`: deterministic `.hnmod` and SHA-256 builder; writes to ignored `dist/`.
-- `tools/audit-bundle/`: compares pristine and generated Rust syntax trees to detect unrelated changes.
+- `src/lib.rs`: settings registration and the `right_click_block` hook.
+- `src/harvest.rs`: target choice, harvest and replant through Horizon's block, loot and inventory calls.
+- `src/core.rs`: plant table, payment choice and unit tests; no game calls.
+- `assets/right_click_crops/lang/en_us.json`: setting labels.
 - `tools/compare_loot.py`: compares recorded ordinary and modded loot observations.
 - `tools/test_*.py`: gameplay checks driven by `horizon-ctl` against an already running isolated test session. Run a script with `--help` for its arguments; these scripts do not launch a game or prepare Minecraft resources.
-
-Some launch/setup and focused regression harnesses used for the release remain local. The published scripts alone do not reproduce the complete validation campaign; see [Validation](../VALIDATION.md) for the scope of the recorded evidence.
 
 Product behaviour is defined in [Requirements](requirements.md), with rationale in [Decisions](decisions.md). Player-facing guides cover [harvest rules and drop chances](harvesting.md), [installation](installation.md), [settings](settings.md) and [multiplayer compatibility](multiplayer.md).
 
 ## Boundaries
 
 - Do not edit a player's Horizon installation or normal saves.
-- Do not commit game resources, prepared Horizon source, build output or credentials.
+- Do not commit game resources, the downloaded SDK, build output or credentials.
 - Use Horizon's ordinary loot, growth and world-update paths.
 - Keep gameplay claims separate from compilation and structural checks.
 - Public releases, repository visibility changes and public announcements require separate approval.

@@ -1,10 +1,11 @@
 # Decisions
 
 - The repository is `horizon-right-click-crops`; the internal mod ID is `right_click_crops` because Horizon package IDs permit lowercase letters, digits and underscores only.
-- The implementation remains a native `horizon-mixins` mod; it will not be silently replaced with a WASM project or built-in Horizon feature.
+- From 2.0.0 the mod is a WebAssembly mod built with the Horizon mod SDK and its `right_click_block` hook (decided 2026-11-18). Horizon retired `.hnmod` and horizon-mixins; a WebAssembly mod installs without a native build or trust prompt, so more players can use it. Native mixins are not used.
 - The first public version is `1.0.0` after release-pin and multiplayer validation.
+- The WebAssembly package is built on Linux GitHub Actions: SDK `0b14f8a` refuses WebAssembly built on Windows.
 - Original project code and documentation use the MIT License. Third-party material keeps its own notice.
-- MIT permits forks but grants no write access to the official repository. Official packages come only from `AyanoKaito/horizon-right-click-crops` releases. Release assets are the `.hnmod` and its `.minisig`; the public key is published in the docs and the registry entry, and GitHub shows each asset's SHA-256.
+- MIT permits forks but grants no write access to the official repository. Official packages come only from `AyanoKaito/horizon-right-click-crops` releases. Release assets are the `.hmod` (`.hnmod` up to 1.0.1) and its `.minisig`; the public key is published in the docs and the registry entry, and GitHub shows each asset's SHA-256.
 - Current documents are rewritten in place. Git history preserves superseded development stages; no additional history archive is maintained.
 - Gameplay uses Horizon's authoritative server hooks so the acting LAN guest, not only the world owner, can trigger harvest logic.
 - Loot pays for replanting before inventory; missing material does not cancel harvest.
@@ -13,9 +14,9 @@
 - Vertical plants retain one connected base. Pumpkin and melon retain their attached stem.
 - Bone meal always remains an ordinary game interaction.
 - Sweet berries and glow berries remain ordinary Horizon interactions and have no settings.
-- The sixteen managed plants have one flat alphabetical settings page and one `plants.conf`; individual UI changes apply immediately, while the global toggle requires restart.
-- The release targets one exact current Nightly. Compatibility with later incompatible Nightlies is handled by patch releases, not an unbounded promise.
-- Dedicated support is not advertised until Horizon builds native mods for its dedicated distribution path and the mod passes that environment.
+- The sixteen managed plants have one settings page through Horizon's settings service; changes apply immediately, while the whole-mod toggle requires restart. 1.x `plants.conf` values are not migrated.
+- The release targets one exact SDK pin. Compatibility with later incompatible Horizon versions is handled by patch releases, not an unbounded promise.
+- Dedicated support is not advertised until the mod passes a dedicated gameplay check.
 - The demonstration is one combined video: static grey title card, centred labels, complete plants and retained sections visible, shorter plant segments, then a brief settings-menu view.
 - The project is AI-assisted under human direction. Validation reports contain only tests that were actually run.
 - The current project icon was generated with Google Gemini (Nano Banana) under AyanoKaito's direction and approved for use in the repository, release artwork and registry submission. It is distributed under MIT to the extent of the project's rights; provenance is recorded in `THIRD_PARTY_NOTICES.md`. The demonstration thumbnail remains based on actual gameplay footage, not the icon.
