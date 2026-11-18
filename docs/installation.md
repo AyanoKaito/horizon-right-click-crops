@@ -16,12 +16,16 @@ minisign -V -P RWRwbuaByP5mM4VUm4kZEQVPiuw+3IEVJ7CZcEHIjY5fPKf9lhQKUZRy -m right
 
 The expected success message is `Signature and comment signature verified`. The public key above (ID `3366FEC881E66E70`) is the same key used for every earlier release. A valid signature proves the package was signed by the matching key, not that its code is harmless.
 
-## Install
+## Horizon launcher
+
+Open the launcher's **Mods** page, find Right-Click Crops, install it and turn it on there. Start the game: the mod appears on the **Mods** screen, and its **Config** button opens the plant settings.
+
+## Install by hand
 
 1. In the Horizon launcher, open the instance's folder (**Open folder** in its ⋮ menu). This is the folder that holds `options.txt`.
 2. Copy `right_click_crops-2.0.0.hmod` into `horizon-mods/` there. Create the folder if it is missing.
 3. Turn the mod on: add the line `mod.right_click_crops:true` to `horizon-mods.txt` beside `options.txt`.
-4. Start the game. The mod appears on the **Mods** screen; its **Config** button opens the plant settings.
+4. Start the game.
 
 The mod runs in Horizon's WebAssembly sandbox. There is no native build step and no native-code trust prompt. For LAN play, install it on every player's game; see [Multiplayer](multiplayer.md).
 
@@ -31,4 +35,4 @@ Versions 1.0.0 and 1.0.1 were native `.hnmod` packages for older Horizon Nightli
 
 ## Updates and removal
 
-Replace the `.hmod` in `horizon-mods/` to update. Delete it, or set its line to `mod.right_click_crops:false`, to remove it. Worlds keep ordinary Minecraft plant states and do not require this mod to load. Back up important worlds before changing mods.
+Update or remove the mod on the launcher's Mods page. For a hand install, replace the `.hmod` in `horizon-mods/` to update; delete it, or set its line to `mod.right_click_crops:false`, to remove it. Worlds keep ordinary Minecraft plant states and do not require this mod to load. Back up important worlds before changing mods.

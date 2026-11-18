@@ -64,7 +64,7 @@ The mod handles one targeted plant at a time. It does not add area harvesting, b
 
 ## Installation
 
-Download `right_click_crops-2.0.0.hmod` from the official GitHub Release, copy it into the game folder's `horizon-mods/`, and turn it on with the line `mod.right_click_crops:true` in `horizon-mods.txt`. Version 2 is a WebAssembly mod: it runs in Horizon's mod sandbox, with no native build and no native-code trust prompt.
+Install Right-Click Crops from the Horizon launcher's **Mods** page and turn it on there. Version 2 is a WebAssembly mod: it runs in Horizon's mod sandbox, with no native build and no native-code trust prompt. You can also install the `.hmod` from the GitHub Release by hand.
 
 See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Compatibility](docs/multiplayer.md) for the current details.
 
