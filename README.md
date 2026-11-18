@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/crop.png" width="160" alt="Right-Click Crops icon generated with Google Gemini">
+  <img src="icon.png" width="160" alt="Right-Click Crops icon generated with Google Gemini">
 </p>
 
 <h1 align="center">Right-Click Crops</h1>

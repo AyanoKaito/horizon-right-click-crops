@@ -4,7 +4,7 @@ The project's original code and documentation are licensed under the MIT License
 
 ## Project icon
 
-`assets/crop.png` was generated with Google Gemini (Nano Banana) under AyanoKaito's direction and selected for this project. It is not represented as a hand-drawn work or as official Minecraft artwork.
+`icon.png` was generated with Google Gemini (Nano Banana) under AyanoKaito's direction and selected for this project. It is not represented as a hand-drawn work or as official Minecraft artwork.
 
 The project distributes the icon under the MIT License to the extent of the rights it holds. This statement does not claim exclusive copyright in purely AI-generated material or grant rights belonging to third parties. Google does not claim ownership of generated original content; see [Google Terms of Service](https://policies.google.com/terms), "Content in Google services".
 

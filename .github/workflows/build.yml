@@ -1,0 +1,69 @@
+# Builds the mod to mod.wasm on Linux and packs right_click_crops.hmod as a workflow artifact.
+# Wasm built on Windows is refused by the game at SDK 0b14f8ac (horizon-rust/horizon#18261), so the
+# release package comes from this job. Nothing here signs or publishes.
+name: Build
+
+on:
+  push:
+    branches: [main, sdk-wasm-port]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wasm:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the SDK pin and Horizon's Rust version
+        run: |
+          sdk=$(grep -Po '^sdk = "\K[0-9a-f]{40}(?=")' Cargo.toml)
+          echo "HORIZON_SDK=$sdk" >> "$GITHUB_ENV"
+          rust=$(curl -fsSL "https://raw.githubusercontent.com/horizon-rust/horizon/$sdk/tools/ci/rust-version")
+          echo "HORIZON_RUST=$rust" >> "$GITHUB_ENV"
+
+      - name: Install Rust ${{ env.HORIZON_RUST }}
+        run: rustup toolchain install "$HORIZON_RUST" --profile minimal --component rust-src --target wasm32-unknown-unknown
+
+      - name: Restore cargo-horizon-mod
+        id: tool
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/cargo-horizon-mod
+          key: cargo-horizon-mod-${{ env.HORIZON_SDK }}
+
+      - name: Build cargo-horizon-mod at the SDK commit
+        if: steps.tool.outputs.cache-hit != 'true'
+        run: |
+          git init -q "$RUNNER_TEMP/horizon"
+          cd "$RUNNER_TEMP/horizon"
+          git fetch -q --depth 1 https://github.com/horizon-rust/horizon.git "$HORIZON_SDK"
+          git checkout -q FETCH_HEAD
+          cargo "+$HORIZON_RUST" build --release --locked -p cargo-horizon-mod
+          mkdir -p ~/.local/cargo-horizon-mod
+          cp target/release/cargo-horizon-mod ~/.local/cargo-horizon-mod/
+
+      - run: echo "$HOME/.local/cargo-horizon-mod" >> "$GITHUB_PATH"
+
+      - name: Build mod.wasm and the package
+        run: cargo horizon-mod build --wasm
+
+      - name: Unit tests
+        run: cargo "+$HORIZON_RUST" test
+
+      - name: Registry checks
+        run: cargo horizon-mod check target/horizon-mod/right_click_crops.hmod
+
+      - name: SHA-256
+        run: sha256sum target/horizon-mod/right_click_crops.hmod | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: right_click_crops-hmod
+          path: |
+            target/horizon-mod/right_click_crops.hmod
+            horizon-mod.toml
+          if-no-files-found: error
