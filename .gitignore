@@ -43,3 +43,7 @@ opencode.local.jsonc
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Horizon mod SDK (fetched by cargo horizon-mod) and wasm build output
+/.horizon/
+/mod.wasm

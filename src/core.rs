@@ -1,12 +1,6 @@
-// Shared by the standalone library and the injected game module.
-use std::sync::{OnceLock, atomic::{AtomicBool, AtomicU32, Ordering}};
+//! Plant tables and replanting payment: pure logic, independent of the game API.
 
 pub const MOD_ID: &str = "right_click_crops";
-pub const MOD_NAME: &str = "Right-Click Crops";
-pub const MOD_VERSION: &str = "1.0.1";
-pub const MOD_DESCRIPTION: &str = "Survival harvesting with individual settings for sixteen plant families.";
-pub const STARTUP_MESSAGE: &str = "[right_click_crops] Plant settings apply immediately; the global mod toggle requires a full game restart.";
-pub const CONFIG_FILE: &str = "plants.conf";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -70,6 +64,8 @@ impl Plant {
         }
     }
 
+    // The English label; the game shows it from assets/right_click_crops/lang/en_us.json.
+    #[cfg_attr(not(test), allow(dead_code))]
     pub const fn label(self) -> &'static str {
         match self {
             Self::Bamboo => "Bamboo",
@@ -91,8 +87,9 @@ impl Plant {
         }
     }
 
-    pub fn from_key(key: &str) -> Option<Self> {
-        Self::ALL.into_iter().find(|plant| plant.key() == key)
+    /// The translation key of the plant's setting label (`assets/right_click_crops/lang/`).
+    pub fn label_key(self) -> String {
+        format!("{MOD_ID}.setting.{}", self.key())
     }
 
     pub fn from_block(block: &str) -> Option<Self> {
@@ -116,61 +113,6 @@ impl Plant {
             _ => None,
         }
     }
-
-    const fn bit(self) -> u32 { 1 << self as u8 }
-}
-
-const ALL_PLANTS_MASK: u32 = (1 << Plant::ALL.len()) - 1;
-static PLANT_SETTINGS_LOADED: OnceLock<()> = OnceLock::new();
-static PLANT_MASK: AtomicU32 = AtomicU32::new(ALL_PLANTS_MASK);
-
-pub fn parse_plant_config(contents: Option<&str>) -> u32 {
-    let mut mask = ALL_PLANTS_MASK;
-    let Some(contents) = contents else { return mask; };
-    for line in contents.lines().map(str::trim) {
-        if line.is_empty() || line.starts_with('#') { continue; }
-        let Some((key, value)) = line.split_once('=') else { continue; };
-        let Some(plant) = Plant::from_key(key.trim()) else { continue; };
-        match value.trim() {
-            "true" => mask |= plant.bit(),
-            "false" => mask &= !plant.bit(),
-            _ => {}
-        }
-    }
-    mask
-}
-
-pub fn serialize_plant_config(mask: u32) -> String {
-    let mut out = String::from(
-        "# Right-Click Crops plant settings.\n# true enables the mod's action; false leaves ordinary Horizon behavior.\n",
-    );
-    for plant in Plant::ALL {
-        out.push_str(plant.key());
-        out.push('=');
-        out.push_str(if mask & plant.bit() != 0 { "true" } else { "false" });
-        out.push('\n');
-    }
-    out
-}
-
-pub fn plant_settings_loaded() -> bool { PLANT_SETTINGS_LOADED.get().is_some() }
-
-pub fn load_plant_settings_once(contents: Option<&str>) {
-    PLANT_SETTINGS_LOADED.get_or_init(|| {
-        PLANT_MASK.store(parse_plant_config(contents), Ordering::Release);
-    });
-}
-
-pub fn plant_enabled(plant: Plant) -> bool {
-    PLANT_MASK.load(Ordering::Acquire) & plant.bit() != 0
-}
-
-pub fn toggle_plant(plant: Plant) {
-    PLANT_MASK.fetch_xor(plant.bit(), Ordering::AcqRel);
-}
-
-pub fn plant_config() -> String {
-    serialize_plant_config(PLANT_MASK.load(Ordering::Acquire))
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -246,22 +188,12 @@ pub fn stem_fruit_profile(block: &str) -> Option<StemFruit> {
     }
 }
 
-static ENABLED: OnceLock<bool> = OnceLock::new();
-static STARTUP_REPORTED: AtomicBool = AtomicBool::new(false);
-
-pub fn enabled(requested: bool) -> bool {
-    *ENABLED.get_or_init(|| requested)
-}
-
-pub fn report_startup_once() {
-    if !STARTUP_REPORTED.swap(true, Ordering::Relaxed) {
-        eprintln!("{STARTUP_MESSAGE}");
-    }
-}
 
 pub trait SeedStack {
     fn item(&self) -> &str;
     fn count(&self) -> u32;
+    // Used by `spend_one`, the reference model the payment tests check.
+    #[cfg_attr(not(test), allow(dead_code))]
     fn count_mut(&mut self) -> &mut u32;
 }
 
@@ -291,6 +223,7 @@ pub fn select_payment<'a, S: SeedStack + 'a>(
 }
 
 // Called only after the world transition succeeds. Selection guarantees a seed.
+#[cfg_attr(not(test), allow(dead_code))]
 pub fn spend_one<S: SeedStack>(slot: &mut Option<S>, planting_item: &str) {
     if let Some(stack) = slot.as_mut().filter(|s| is_seed(*s, planting_item)) {
         *stack.count_mut() -= 1;
@@ -382,15 +315,6 @@ mod tests {
             let mut slot = Some(stack.clone());
             spend_one(&mut slot, SEED);
             assert_eq!(slot, Some(stack));
-        }
-    }
-
-    #[test]
-    fn enablement_latch_keeps_both_sides_consistent_until_restart() {
-        for first in [false, true] {
-            let setting = OnceLock::new();
-            assert_eq!(*setting.get_or_init(|| first), first);
-            assert_eq!(*setting.get_or_init(|| !first), first);
         }
     }
 
@@ -490,24 +414,11 @@ mod tests {
     }
 
     #[test]
-    fn plant_config_defaults_to_enabled_and_accepts_exact_boolean_overrides() {
-        assert_eq!(parse_plant_config(None), ALL_PLANTS_MASK);
-        let mask = parse_plant_config(Some(
-            "# player choices\nkelp=false\nwheat=false\nunknown=false\ncactus=invalid\n",
-        ));
-        assert_eq!(mask & Plant::Kelp.bit(), 0);
-        assert_eq!(mask & Plant::Wheat.bit(), 0);
-        assert_ne!(mask & Plant::Cactus.bit(), 0);
-        assert_ne!(mask & Plant::Bamboo.bit(), 0);
-    }
-
-    #[test]
-    fn serialized_plant_config_is_stable_and_round_trips() {
-        let mask = ALL_PLANTS_MASK & !Plant::Bamboo.bit() & !Plant::PitcherCrop.bit();
-        let text = serialize_plant_config(mask);
-        assert!(text.contains("bamboo=false\n"));
-        assert!(text.contains("pitcher_crop=false\n"));
-        assert!(!text.contains("berry"));
-        assert_eq!(parse_plant_config(Some(&text)), mask);
+    fn every_plant_setting_has_an_english_label() {
+        let lang = include_str!("../assets/right_click_crops/lang/en_us.json");
+        for plant in Plant::ALL {
+            let entry = format!("\"{}\": \"{}\"", plant.label_key(), plant.label());
+            assert!(lang.contains(&entry), "missing {entry}");
+        }
     }
 }

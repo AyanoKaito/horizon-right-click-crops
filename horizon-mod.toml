@@ -1,0 +1,13 @@
+id = "right_click_crops"
+name = "Right-Click Crops"
+version = "2.0.0"
+description = "Survival harvesting with individual settings for sixteen plant families."
+authors = ["AyanoKaito"]
+license = "MIT"
+license_url = "https://github.com/AyanoKaito/horizon-right-click-crops/blob/main/LICENSE"
+homepage = "https://github.com/AyanoKaito/horizon-right-click-crops"
+issues = "https://github.com/AyanoKaito/horizon-right-click-crops/issues"
+# A wasm mod: Rust in src/, built to mod.wasm by `cargo horizon-mod build --wasm` against the SDK build Cargo.toml pins.
+api = "0.2"
+side = "both"
+capabilities = ["registries"]

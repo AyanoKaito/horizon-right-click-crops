@@ -1,30 +1,30 @@
 <p align="center">
-  <img src="assets/crop.png" width="160" alt="Right-Click Crops icon generated with Google Gemini">
+  <img src="icon.png" width="160" alt="Right-Click Crops icon generated with Google Gemini">
 </p>
 
 <h1 align="center">Right-Click Crops</h1>
 
 <p align="center">
   <strong>Harvest with a right-click. Keep your garden growing.</strong><br>
-  A native Horizon mod with sixteen plant families and individual settings.
+  A WebAssembly Horizon mod with sixteen plant families and individual settings.
 </p>
 
 <p align="center">
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.1"><img src="https://img.shields.io/badge/release-v1.0.1-4c8c4a" alt="Release v1.0.1"></a>
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/release-v2.0.0-4c8c4a" alt="Release v2.0.0"></a>
   <a href="docs/multiplayer.md"><img src="https://img.shields.io/badge/Minecraft-26.3-6b7280" alt="Minecraft Java Edition 26.3"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c8c4a" alt="MIT License"></a>
 </p>
 
 <p align="center">
   <a href="https://playhorizon.dev/mods/right_click_crops">Horizon page</a> &middot;
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v1.0.1"><strong>Download</strong></a> &middot;
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0"><strong>Download</strong></a> &middot;
   <a href="docs/installation.md">Installation</a> &middot;
   <a href="docs/settings.md">Settings</a> &middot;
   <a href="https://youtu.be/kll-qvj5s54">Watch demo</a>
 </p>
 
 <p align="center">
-  Last updated and checked: <strong>November 7, 2026</strong>.<br>
+  Last updated and checked: <strong>November 19, 2026</strong>.<br>
   See the compatibility notes below for the scope of testing.
 </p>
 
@@ -50,7 +50,7 @@ See the **[Harvesting guide](docs/harvesting.md)** for planting materials, retai
 - Replant with exactly one matching item from generated loot, then fall back to the player's inventory.
 - Harvest without replanting when no matching item exists; never create a free seed.
 - Retain the base of vertical plants and the attached stem of pumpkins and melons.
-- Toggle all sixteen managed plant families separately under `Options > Mods > Right-Click Crops > Settings`.
+- Toggle all sixteen managed plant families separately under `Options > Mods > Right-Click Crops > Config`.
 - Leave immature plants, bone meal, ordinary left-click breaking, sweet berries, glow berries and unrelated interactions to Horizon.
 
 The mod handles one targeted plant at a time. It does not add area harvesting, bonus loot, hunger costs or experience costs.
@@ -64,18 +64,17 @@ The mod handles one targeted plant at a time. It does not add area harvesting, b
 
 ## Installation
 
-Download `right_click_crops-1.0.1.hnmod` from the official GitHub Release, or use the launcher's **Add from GitHub** with this repository. Horizon native mods run with the player's privileges and are compiled into a separate game build only after the player accepts Horizon's native-code warning.
+Install Right-Click Crops from the Horizon launcher's **Mods** page and turn it on there. Version 2 is a WebAssembly mod: it runs in Horizon's mod sandbox, with no native build and no native-code trust prompt. You can also install the `.hmod` from the GitHub Release by hand.
 
 See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Compatibility](docs/multiplayer.md) for the current details.
 
 ## Compatibility
 
-- Compatibility last reviewed on **November 7, 2026**, for Minecraft 26.3.
-- The gameplay entrypoints run on the authoritative server path used by single-player, LAN hosts and LAN guests.
-- Single-player and LAN host/guest checks passed on the release's pinned Horizon. See [Validation](VALIDATION.md) for the exact revisions and results.
-- Horizon does not yet build native mods through its player-ready dedicated-server pipeline. Dedicated support is therefore not advertised.
-
-Native mods are revision-pinned. A future incompatible Horizon Nightly may require a Right-Click Crops patch release.
+- Compatibility last reviewed on **November 19, 2026**, for Minecraft 26.3.
+- Built with Horizon mod SDK `0b14f8a` (mod API 0.2) as `mod.wasm`.
+- Harvesting runs on the authoritative server path used by single-player, LAN hosts and LAN guests.
+- Single-player and LAN host/guest checks passed on Horizon Nightly `2026-11-18` (`0b14f8a`). See [Validation](VALIDATION.md) for the exact results.
+- Dedicated servers are not advertised until a dedicated gameplay check passes.
 
 ## Project integrity
 

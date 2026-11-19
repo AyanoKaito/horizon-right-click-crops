@@ -1,12 +1,12 @@
 # Right-Click Crops requirements
 
-This is the current product contract for version `1.0.1`. Behaviour changes require approval.
+This is the current product contract for version `2.0.0`. Behaviour changes require approval.
 
 ## Scope
 
-- The project is a small independent Horizon native mod with one mechanic.
+- The project is a small independent Horizon WebAssembly mod with one mechanic, built with the Horizon mod SDK.
 - It is an original implementation, not a port, and does not use gameplay code from other harvest mods.
-- Version `1.0.1` targets the latest Nightly selected for release and Minecraft 26.3.
+- Version `2.0.0` targets Horizon mod SDK `0b14f8a` (mod API 0.2) and Minecraft 26.3.
 - Support is advertised only for environments that pass actual gameplay validation.
 
 ## Managed plants
@@ -48,11 +48,11 @@ Sweet berries and glow berries retain ordinary Horizon behaviour and have no mod
 ## Settings
 
 - Every managed plant has an independent setting, enabled by default.
-- Settings are available through Horizon's native Mods UI and persist in `plants.conf`.
-- The settings page is one alphabetical list of `Plant: ON/OFF` buttons without categories, counts or a second global action.
-- In-game changes apply immediately and save the complete file; manual changes load on the next process start.
-- Missing keys, malformed values and a missing file use the enabled default. Unknown keys are ignored.
-- Horizon's global native-mod toggle remains the whole-mod control and requires a process restart.
+- Settings are registered with Horizon's settings service and appear on the mod's Config page; Horizon stores them.
+- The page lists one on/off setting per plant, without categories, counts or a second global action.
+- Changes apply to the next click without a restart. Missing values use the enabled default.
+- In a LAN game the host's settings decide harvesting for every player.
+- Horizon's per-mod line in `horizon-mods.txt` remains the whole-mod control and requires a restart.
 - Sweet berries and glow berries do not appear in the list.
 - Disabling or removing the mod must leave ordinary interactions and existing worlds usable.
 
@@ -67,8 +67,8 @@ Sweet berries and glow berries retain ordinary Horizon behaviour and have no mod
 
 ## Validation and release
 
-- Required release checks: standalone tests, structural tests, real mixin plan, AST preservation, native build, isolated single-player gameplay, LAN host/guest gameplay, package inspection and SHA-256.
+- Required release checks: unit tests, WebAssembly build and `cargo horizon-mod check` on Linux CI, isolated single-player gameplay, LAN host/guest gameplay, package inspection and SHA-256.
 - Gameplay checks cover empty and held main-hand clicks, offhand follow-up, mature and immature targets, bone meal in either hand, loot-funded and inventory-funded replanting, missing material, repeated use, ordinary breaking and planting, settings, persistence and save/reopen behaviour.
 - Compilation alone is not gameplay evidence. Skipped checks and platform limitations must be reported.
-- Dedicated support is not claimed while Horizon lacks a player-ready native-mod build pipeline for dedicated servers.
+- Dedicated support is not claimed until a dedicated gameplay check passes.
 - Public release, repository visibility and public announcements happen only after separate approval.

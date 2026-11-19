@@ -1,16 +1,16 @@
 # Plant settings
 
-Open `Options > Mods > Right-Click Crops > Settings` to see one alphabetical list of sixteen `Plant: ON/OFF` buttons.
+Open the **Mods** screen (title screen or `Options > Mods`), select Right-Click Crops and press **Config**. The page lists sixteen on/off settings, one per managed plant.
 
-All plants default to `ON`. A button changes the corresponding plant immediately for the running process. The global native-mod switch still requires a full game restart.
+All plants default to `ON`. A change applies to the next right-click; no restart is needed. Horizon's on/off line in `horizon-mods.txt` remains the whole-mod switch and needs a restart.
 
-Settings are stored in:
+Horizon stores the settings in:
 
 ```text
-horizon-mods/.horizon-mod-data/right_click_crops/plants.conf
+horizon-mods/.horizon-mod-data/right_click_crops/
 ```
 
-Supported keys:
+There is one file per setting. Setting keys:
 
 ```text
 bamboo
@@ -31,8 +31,8 @@ weeping_vines
 wheat
 ```
 
-Each value is `true` or `false`. Unknown keys and malformed values are ignored. Manual edits load on the next game start.
+The 1.x `plants.conf` file is no longer read. After upgrading, all plants start `ON`.
 
-If you used a development build with the former `right-click-crops` ID, copy its `plants.conf` into the new `right_click_crops` directory before starting `1.0.0`; otherwise the defaults apply.
+In a LAN game, the host's settings decide what the host's world harvests, for every player. A guest's own settings only affect what the guest's game predicts before the host answers.
 
 Sweet berries and glow berries have no setting because the mod does not replace their ordinary Horizon interactions.
