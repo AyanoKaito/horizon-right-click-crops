@@ -2,7 +2,7 @@
 
 This file records checks that were actually run. Compilation and structural checks are not presented as gameplay proof.
 
-## 2.0.1 release candidate (SDK f00125f)
+## Published 2.0.1 release (SDK f00125f)
 
 Target: Minecraft 26.3, Horizon mod SDK `f00125f61f794aaa3d4e950d301f353b35b6ee3d` (mod API 0.2). Checked on 2026-11-19.
 
