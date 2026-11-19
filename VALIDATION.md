@@ -21,7 +21,7 @@ Version 2 is a rewrite for the mod SDK. The 1.x evidence below was gathered on n
 | LAN host and guest gameplay | Passed: 10 wheat cases (5 per actor: empty hand, held stick, bone meal in either hand, off-hand snowball), crop states matching on both clients |
 | Dedicated server | Not claimed |
 
-The plant, wheat, snowball and settings runs loaded the package with `--dev-mod`; the installed-package run used the player install path. Fixtures were prepared with creative commands; every harvest assertion ran in survival. LAN fixtures used an operator-enabled LAN world, so this does not prove a no-cheats LAN session. No mod errors appeared in the game logs. The release package will be this CI artifact renamed to `right_click_crops-2.0.0.hmod`.
+The plant, wheat, snowball and settings runs loaded the package with `--dev-mod`; the installed-package run used the player install path. Fixtures were prepared with creative commands; every harvest assertion ran in survival. LAN fixtures used an operator-enabled LAN world, so this does not prove a no-cheats LAN session. No mod errors appeared in the game logs. The release package `right_click_crops-2.0.0.hmod` comes from CI run 44427597179 on commit `433f4de` (SHA-256 `c7cb17b53d017fb12f5bfa951e78a17ba574d911ddb10676388978a0618dc16e`). Its `mod.wasm` is byte-identical to the tested one (same `[wasm] sha512`); only packed documentation changed. It passed the installed-package run again.
 
 ## Published 1.0.1 release
 
