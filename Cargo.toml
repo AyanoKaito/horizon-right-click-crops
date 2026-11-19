@@ -1,6 +1,6 @@
 [package]
 name = "mod-right_click_crops"
-version = "2.0.0"
+version = "2.0.1"
 edition = "2024"
 description = "Right-click harvesting for supported crops and plants in Horizon"
 publish = false
@@ -15,4 +15,4 @@ unsafe_code = "forbid"
 
 # The SDK build this mod is made for: `cargo horizon-mod update` moves it.
 [package.metadata.horizon]
-sdk = "0b14f8acfd97fa2c750e42795249dcc981178ca4"
+sdk = "f00125f61f794aaa3d4e950d301f353b35b6ee3d"
