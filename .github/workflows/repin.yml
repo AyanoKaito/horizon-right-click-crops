@@ -1,0 +1,29 @@
+# Temporary: runs `cargo horizon-mod update` to the new SDK and uploads the changed files.
+name: Repin
+on:
+  push:
+    branches: [sdk-repin-2.0.1]
+permissions:
+  contents: read
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    env:
+      NEW_SDK: f00125f61f794aaa3d4e950d301f353b35b6ee3d
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          rust=$(curl -fsSL "https://raw.githubusercontent.com/horizon-rust/horizon/$NEW_SDK/tools/ci/rust-version")
+          rustup toolchain install "$rust" --profile minimal
+          cargo "+$rust" install --locked --git https://github.com/horizon-rust/horizon --rev "$NEW_SDK" cargo-horizon-mod
+      - run: cargo horizon-mod update "$NEW_SDK" 2>&1 | tee update.log
+      - run: git diff | tee update.diff
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repin
+          path: |
+            update.log
+            update.diff
+            Cargo.toml
+            Cargo.lock
+            horizon-mod.toml
