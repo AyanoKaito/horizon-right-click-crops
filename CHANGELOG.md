@@ -2,7 +2,7 @@
 
 All notable changes to Right-Click Crops are documented here.
 
-## Unreleased
+## 2.0.0 - 2026-11-19
 
 - Rewrote the mod for the Horizon mod SDK as a WebAssembly mod (`.hmod`, mod API 0.2, SDK `0b14f8a`). Horizon retired `.hnmod` native packages and horizon-mixins.
 - No native build or native-code trust prompt is needed; install by copying the `.hmod` into `horizon-mods/`.
