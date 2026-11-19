@@ -20,7 +20,7 @@ From Nightly `2026-11-19` (`f00125f`), WebAssembly mods link their game calls by
 | LAN host and guest gameplay | Passed: 10 wheat cases, crop states matching on both clients |
 | Dedicated server | Not claimed |
 
-This Nightly refuses to start a launcher-managed installation directly until the launcher's Play has registered its cache folders. The test runs used a copy of the installed version outside the launcher data folder. No mod errors appeared in the game logs.
+This Nightly refuses to start a launcher-managed installation directly until the launcher's Play has registered its cache folders. The test runs used a copy of the installed version outside the launcher data folder. No mod errors appeared in the game logs. The release package `right_click_crops-2.0.1.hmod` comes from CI run 44577647751 on commit `7e8c72d` (SHA-256 `e6b741f6d45f0d498eaf8fddbef5a517955befbedacca0093a4a5b3e64d8b1a1`). Its `mod.wasm` is byte-identical to the tested one (same `[wasm] sha512`); only packed documentation changed. It passed the installed-package run again. The author's Minisign signature verifies with the project key.
 
 ## Published 2.0.0 release (WebAssembly)
 
