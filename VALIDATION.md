@@ -2,6 +2,26 @@
 
 This file records checks that were actually run. Compilation and structural checks are not presented as gameplay proof.
 
+## 2.0.1 release candidate (SDK f00125f)
+
+Target: Minecraft 26.3, Horizon mod SDK `f00125f61f794aaa3d4e950d301f353b35b6ee3d` (mod API 0.2). Checked on 2026-11-19.
+
+From Nightly `2026-11-19` (`f00125f`), WebAssembly mods link their game calls by name (horizon-rust/horizon#18357), and the game refuses mods built on older SDKs, including 2.0.0. Version 2.0.1 is the same source rebuilt on the new SDK; `cargo horizon-mod update` reported that none of the 233 items the mod uses changed. Game runs used Nightly `nightly-2026-11-19-f00125f` through the official `horizon-ctl`, set up as for 2.0.0.
+
+| Check | Result |
+|---|---|
+| GitHub Actions on Ubuntu 24.04, commit `b901521` | Passed: `cargo-horizon-mod` built at the SDK commit, `cargo horizon-mod build --wasm`, 14 unit tests, `cargo horizon-mod check` |
+| Package | `right_click_crops.hmod`, SHA-256 `ad0e2660dcd499b0e8bae1ee3570e58a557361611206d27643d0463f0cb3d892` (CI artifact, not a release) |
+| Single-player plant groups | Passed: 97 checks (field crops 24, wart/cocoa 16, flower crops 14, vertical plants 13, kelp/vines 13, stem fruits 10, berries 7). In the first all-groups session, cactus did not regrow within the test's wait, and the leftover items then failed the melon setup check; both groups passed when rerun in their own sessions |
+| Single-player wheat | Passed: 6 payment and loot slices and 8 interaction checks |
+| Off-hand snowball | Passed: crop `wheat[age=0]`, snowballs stay at 4 |
+| Settings | Passed: OFF on the Config page, OFF survives a restart, ON again without a restart |
+| Installed package | Passed: player install path loads (`wasm mods loaded (1)`) and harvests |
+| LAN host and guest gameplay | Passed: 10 wheat cases, crop states matching on both clients |
+| Dedicated server | Not claimed |
+
+This Nightly refuses to start a launcher-managed installation directly until the launcher's Play has registered its cache folders. The test runs used a copy of the installed version outside the launcher data folder. No mod errors appeared in the game logs. The release package `right_click_crops-2.0.1.hmod` comes from CI run 44577647751 on commit `7e8c72d` (SHA-256 `e6b741f6d45f0d498eaf8fddbef5a517955befbedacca0093a4a5b3e64d8b1a1`). Its `mod.wasm` is byte-identical to the tested one (same `[wasm] sha512`); only packed documentation changed. It passed the installed-package run again. The author's Minisign signature verifies with the project key.
+
 ## Published 2.0.0 release (WebAssembly)
 
 Target: Minecraft 26.3, Horizon mod SDK `0b14f8acfd97fa2c750e42795249dcc981178ca4` (mod API 0.2). Checked on 2026-11-19.

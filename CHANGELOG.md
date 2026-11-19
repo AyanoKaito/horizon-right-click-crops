@@ -2,6 +2,11 @@
 
 All notable changes to Right-Click Crops are documented here.
 
+## 2.0.1 - 2026-11-19
+
+- Rebuilt on Horizon mod SDK `f00125f` (Nightly `2026-11-19`). From this Nightly, WebAssembly mods link their game calls by name, and the game refuses mods built on older SDKs. No code changes.
+- Bumped the version to `2.0.1`.
+
 ## 2.0.0 - 2026-11-19
 
 - Rewrote the mod for the Horizon mod SDK as a WebAssembly mod (`.hmod`, mod API 0.2, SDK `0b14f8a`). Horizon retired `.hnmod` native packages and horizon-mixins.

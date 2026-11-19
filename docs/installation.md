@@ -2,16 +2,16 @@
 
 ## Release package
 
-Download `right_click_crops-2.0.0.hmod` from the [official 2.0.0 release](https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0), and compare its SHA-256 with the digest GitHub shows for that file on the release page. Version `2.0.0` is a WebAssembly mod built with Horizon mod SDK `0b14f8acfd97fa2c750e42795249dcc981178ca4` (mod API 0.2). It needs a Horizon game that loads WebAssembly mods with that API; it was tested on Horizon Nightly `2026-11-18` (`0b14f8a`).
+Download `right_click_crops-2.0.1.hmod` from the [official 2.0.1 release](https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.1), and compare its SHA-256 with the digest GitHub shows for that file on the release page. Version `2.0.1` is a WebAssembly mod built with Horizon mod SDK `f00125f61f794aaa3d4e950d301f353b35b6ee3d` (mod API 0.2). It needs a Horizon game that loads WebAssembly mods with that API; it was tested on Horizon Nightly `2026-11-19` (`f00125f`).
 
 Official repository: <https://github.com/AyanoKaito/horizon-right-click-crops>
 
 ### Verify the signature
 
-The release also provides `right_click_crops-2.0.0.hmod.minisig`. Download it beside the `.hmod` and verify with [Minisign](https://jedisct1.github.io/minisign/) and the project's public key:
+The release also provides `right_click_crops-2.0.1.hmod.minisig`. Download it beside the `.hmod` and verify with [Minisign](https://jedisct1.github.io/minisign/) and the project's public key:
 
 ```powershell
-minisign -V -P RWRwbuaByP5mM4VUm4kZEQVPiuw+3IEVJ7CZcEHIjY5fPKf9lhQKUZRy -m right_click_crops-2.0.0.hmod
+minisign -V -P RWRwbuaByP5mM4VUm4kZEQVPiuw+3IEVJ7CZcEHIjY5fPKf9lhQKUZRy -m right_click_crops-2.0.1.hmod
 ```
 
 The expected success message is `Signature and comment signature verified`. The public key above (ID `3366FEC881E66E70`) is the same key used for every earlier release. A valid signature proves the package was signed by the matching key, not that its code is harmless.
@@ -23,7 +23,7 @@ Open the launcher's **Mods** page, find Right-Click Crops, install it and turn i
 ## Install by hand
 
 1. In the Horizon launcher, open the instance's folder (**Open folder** in its ⋮ menu). This is the folder that holds `options.txt`.
-2. Copy `right_click_crops-2.0.0.hmod` into `horizon-mods/` there. Create the folder if it is missing.
+2. Copy `right_click_crops-2.0.1.hmod` into `horizon-mods/` there. Create the folder if it is missing.
 3. Turn the mod on: add the line `mod.right_click_crops:true` to `horizon-mods.txt` beside `options.txt`.
 4. Start the game.
 

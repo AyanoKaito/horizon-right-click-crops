@@ -1,14 +1,14 @@
 {
-  "status": "released",
-  "version": "2.0.0",
+  "status": "candidate",
+  "version": "2.0.1",
   "minecraft_version": "26.3",
   "horizon_repository": "https://github.com/horizon-rust/horizon",
   "mod_kind": "wasm",
-  "horizon_sdk": "0b14f8acfd97fa2c750e42795249dcc981178ca4",
+  "horizon_sdk": "f00125f61f794aaa3d4e950d301f353b35b6ee3d",
   "mod_api": "0.2",
   "intended_rust_version": "1.99.1",
   "build_host": "ubuntu-24.04 (GitHub Actions)",
-  "tested_horizon_nightly": "nightly-2026-11-18-0b14f8a",
+  "tested_horizon_nightly": "nightly-2026-11-19-f00125f",
   "validation": {
     "unit_tests": "14-passed",
     "wasm_build": "passed-ci",
@@ -16,7 +16,7 @@
     "single_player": "97-plant-group-checks-6-wheat-slices-8-interactions-offhand-snowball-settings-passed",
     "lan_host_guest": "10-wheat-cases-passed-5-per-actor",
     "dedicated_server": "not-claimed",
-    "previous_release_evidence": "1.0.1-native-passed-on-66f3981f522b24c250b21523a70080965b940424;see-git-history",
+    "previous_release_evidence": "2.0.0-passed-on-nightly-2026-11-18-0b14f8a;1.0.1-native-see-git-history",
     "installed_package": "horizon-mods-folder-install-passed"
   }
 }

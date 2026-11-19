@@ -10,14 +10,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/release-v2.0.0-4c8c4a" alt="Release v2.0.0"></a>
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.1"><img src="https://img.shields.io/badge/release-v2.0.1-4c8c4a" alt="Release v2.0.1"></a>
   <a href="docs/multiplayer.md"><img src="https://img.shields.io/badge/Minecraft-26.3-6b7280" alt="Minecraft Java Edition 26.3"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c8c4a" alt="MIT License"></a>
 </p>
 
 <p align="center">
   <a href="https://playhorizon.dev/mods/right_click_crops">Horizon page</a> &middot;
-  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0"><strong>Download</strong></a> &middot;
+  <a href="https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.1"><strong>Download</strong></a> &middot;
   <a href="docs/installation.md">Installation</a> &middot;
   <a href="docs/settings.md">Settings</a> &middot;
   <a href="https://youtu.be/kll-qvj5s54">Watch demo</a>
@@ -71,9 +71,9 @@ See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Comp
 ## Compatibility
 
 - Compatibility last reviewed on **November 19, 2026**, for Minecraft 26.3.
-- Built with Horizon mod SDK `0b14f8a` (mod API 0.2) as `mod.wasm`.
+- Built with Horizon mod SDK `f00125f` (mod API 0.2) as `mod.wasm`.
 - Harvesting runs on the authoritative server path used by single-player, LAN hosts and LAN guests.
-- Single-player and LAN host/guest checks passed on Horizon Nightly `2026-11-18` (`0b14f8a`). See [Validation](VALIDATION.md) for the exact results.
+- Single-player and LAN host/guest checks passed on Horizon Nightly `2026-11-19` (`f00125f`). See [Validation](VALIDATION.md) for the exact results.
 - Dedicated servers are not advertised until a dedicated gameplay check passes.
 
 ## Project integrity

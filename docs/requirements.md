@@ -1,12 +1,12 @@
 # Right-Click Crops requirements
 
-This is the current product contract for version `2.0.0`. Behaviour changes require approval.
+This is the current product contract for version `2.0.1`. Behaviour changes require approval.
 
 ## Scope
 
 - The project is a small independent Horizon WebAssembly mod with one mechanic, built with the Horizon mod SDK.
 - It is an original implementation, not a port, and does not use gameplay code from other harvest mods.
-- Version `2.0.0` targets Horizon mod SDK `0b14f8a` (mod API 0.2) and Minecraft 26.3.
+- Version `2.0.1` targets Horizon mod SDK `f00125f` (mod API 0.2) and Minecraft 26.3.
 - Support is advertised only for environments that pass actual gameplay validation.
 
 ## Managed plants

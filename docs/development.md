@@ -4,12 +4,12 @@ Right-Click Crops is a Horizon mod SDK project (`horizon-mod.toml`, `Cargo.toml`
 
 ## Pins
 
-- Horizon mod SDK: `0b14f8acfd97fa2c750e42795249dcc981178ca4` (`[package.metadata.horizon] sdk` in `Cargo.toml`), mod API 0.2
+- Horizon mod SDK: `f00125f61f794aaa3d4e950d301f353b35b6ee3d` (`[package.metadata.horizon] sdk` in `Cargo.toml`), mod API 0.2
 - Rust used by Horizon: 1.99.1
 
 ## Build
 
-The release package is built by `.github/workflows/build.yml` on Ubuntu: SDK `0b14f8a` refuses WebAssembly built on Windows. The workflow builds `cargo-horizon-mod` from the Horizon repository at the SDK commit, then runs:
+The release package is built by `.github/workflows/build.yml` on Ubuntu: SDK `0b14f8a` refused WebAssembly built on Windows, so the build stays on Linux. The workflow builds `cargo-horizon-mod` from the Horizon repository at the SDK commit, then runs:
 
 ```sh
 cargo horizon-mod build --wasm

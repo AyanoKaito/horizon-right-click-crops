@@ -3,7 +3,7 @@
 - The repository is `horizon-right-click-crops`; the internal mod ID is `right_click_crops` because Horizon package IDs permit lowercase letters, digits and underscores only.
 - From 2.0.0 the mod is a WebAssembly mod built with the Horizon mod SDK and its `right_click_block` hook (decided 2026-11-18). Horizon retired `.hnmod` and horizon-mixins; a WebAssembly mod installs without a native build or trust prompt, so more players can use it. Native mixins are not used.
 - The first public version is `1.0.0` after release-pin and multiplayer validation.
-- The WebAssembly package is built on Linux GitHub Actions: SDK `0b14f8a` refuses WebAssembly built on Windows.
+- The WebAssembly package is built on Linux GitHub Actions: SDK `0b14f8a` refused WebAssembly built on Windows.
 - Original project code and documentation use the MIT License. Third-party material keeps its own notice.
 - MIT permits forks but grants no write access to the official repository. Official packages come only from `AyanoKaito/horizon-right-click-crops` releases. Release assets are the `.hmod` (`.hnmod` up to 1.0.1) and its `.minisig`; the public key is published in the docs and the registry entry, and GitHub shows each asset's SHA-256.
 - Current documents are rewritten in place. Git history preserves superseded development stages; no additional history archive is maintained.
