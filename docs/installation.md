@@ -2,7 +2,7 @@
 
 ## Release package
 
-Download `right_click_crops-2.0.0.hmod` from the [official 2.0.0 release](https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0), and compare its SHA-256 with the digest GitHub shows for that file on the release page. Version `2.0.0` is a WebAssembly mod built with Horizon mod SDK `0b14f8acfd97fa2c750e42795249dcc981178ca4` (mod API 0.2). It needs a Horizon game that loads WebAssembly mods with that API.
+Download `right_click_crops-2.0.0.hmod` from the [official 2.0.0 release](https://github.com/AyanoKaito/horizon-right-click-crops/releases/tag/v2.0.0), and compare its SHA-256 with the digest GitHub shows for that file on the release page. Version `2.0.0` is a WebAssembly mod built with Horizon mod SDK `0b14f8acfd97fa2c750e42795249dcc981178ca4` (mod API 0.2). It needs a Horizon game that loads WebAssembly mods with that API; it was tested on Horizon Nightly `2026-11-18` (`0b14f8a`).
 
 Official repository: <https://github.com/AyanoKaito/horizon-right-click-crops>
 

@@ -6,11 +6,11 @@ Install the mod on every player's game. The host's settings decide what is harve
 
 ## Status for 2.0.0
 
-- Single-player: not yet checked in game.
-- LAN host: not yet checked in game.
-- LAN guest: not yet checked in game.
+- Single-player: passed on Horizon Nightly `2026-11-18` (`0b14f8a`).
+- LAN host: passed.
+- LAN guest: passed.
 - Dedicated server: not advertised.
 
-Version 1.0.1, a native mod for an older Horizon Nightly, passed single-player and LAN host/guest checks; that evidence does not carry over to the WebAssembly rewrite. Dedicated support will not be claimed until the mod passes a dedicated gameplay check.
+Dedicated support will not be claimed until the mod passes a dedicated gameplay check.
 
 The exact machine-readable status is in [`compatibility.json`](../compatibility.json), and observed checks are in [`VALIDATION.md`](../VALIDATION.md).

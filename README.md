@@ -73,7 +73,7 @@ See [Installation](docs/installation.md), [Settings](docs/settings.md) and [Comp
 - Compatibility last reviewed on **November 19, 2026**, for Minecraft 26.3.
 - Built with Horizon mod SDK `0b14f8a` (mod API 0.2) as `mod.wasm`.
 - Harvesting runs on the authoritative server path used by single-player, LAN hosts and LAN guests.
-- Version 2 game checks are not complete yet. See [Validation](VALIDATION.md) for what has actually been run.
+- Single-player and LAN host/guest checks passed on Horizon Nightly `2026-11-18` (`0b14f8a`). See [Validation](VALIDATION.md) for the exact results.
 - Dedicated servers are not advertised until a dedicated gameplay check passes.
 
 ## Project integrity

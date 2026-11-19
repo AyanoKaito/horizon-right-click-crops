@@ -8,13 +8,15 @@
   "mod_api": "0.2",
   "intended_rust_version": "1.99.1",
   "build_host": "ubuntu-24.04 (GitHub Actions)",
+  "tested_horizon_nightly": "nightly-2026-11-18-0b14f8a",
   "validation": {
     "unit_tests": "14-passed",
     "wasm_build": "passed-ci",
     "registry_check": "passed-ci",
-    "single_player": "not-run",
-    "lan_host_guest": "not-run",
+    "single_player": "97-plant-group-checks-6-wheat-slices-8-interactions-offhand-snowball-settings-passed",
+    "lan_host_guest": "10-wheat-cases-passed-5-per-actor",
     "dedicated_server": "not-claimed",
-    "previous_release_evidence": "1.0.1-native-passed-on-66f3981f522b24c250b21523a70080965b940424;see-git-history"
+    "previous_release_evidence": "1.0.1-native-passed-on-66f3981f522b24c250b21523a70080965b940424;see-git-history",
+    "installed_package": "horizon-mods-folder-install-passed"
   }
 }

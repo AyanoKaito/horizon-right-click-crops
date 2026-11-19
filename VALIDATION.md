@@ -6,16 +6,22 @@ This file records checks that were actually run. Compilation and structural chec
 
 Target: Minecraft 26.3, Horizon mod SDK `0b14f8acfd97fa2c750e42795249dcc981178ca4` (mod API 0.2). Checked on 2026-11-19.
 
-Version 2 is a rewrite for the mod SDK. The 1.x evidence below was gathered on native builds and does not cover it.
+Version 2 is a rewrite for the mod SDK. The 1.x evidence below was gathered on native builds and does not cover it. Game runs used Horizon Nightly `nightly-2026-11-18-0b14f8a` (the SDK commit) through the official `horizon-ctl`, with 26.3 resources prepared from a local Minecraft install, isolated homes and new test worlds (seed 42, Horizon test terrain).
 
 | Check | Result |
 |---|---|
 | `cargo check` on Windows (Rust 1.99.1) | Passed, no warnings |
 | GitHub Actions on Ubuntu 24.04, commit `365f55a` | Passed: `cargo-horizon-mod` built at the SDK commit, `cargo horizon-mod build --wasm`, 14 unit tests, `cargo horizon-mod check` (the registry's checks) |
 | Package | `right_click_crops.hmod`, SHA-256 `7b294f74e738f234dfe13799474830d678f777345b4e5bc0281d99c1ba48652e` (CI artifact, not a release) |
-| Single-player gameplay | Not run yet |
-| LAN host and guest gameplay | Not run yet |
+| Single-player plant groups | Passed: 97 checks across all 16 managed families and ordinary sweet/glow berries (field crops 24, wart/cocoa 16, flower crops 14, vertical plants 13, kelp/vines 13, stem fruits 10, berries 7), all in one session |
+| Single-player wheat | Passed: 6 payment and loot slices and 8 interaction checks (off-hand payment, bone meal in either hand, two hands harvest once, held right-click on successive targets without area harvest, ordinary breaking and planting) |
+| Off-hand snowball | Passed: empty main hand, four snowballs in the off hand; crop `wheat[age=0]`, snowballs stay at 4 |
+| Settings | Passed: wheat toggled OFF on the Config page leaves mature wheat and drops nothing; OFF survives a restart (stored as `wheat` = `false`); ON again harvests and replants without a restart |
+| Installed package | Passed: the `.hmod` copied into `horizon-mods/` with `mod.right_click_crops:true` loads (`wasm mods loaded (1)`) and harvests |
+| LAN host and guest gameplay | Passed: 10 wheat cases (5 per actor: empty hand, held stick, bone meal in either hand, off-hand snowball), crop states matching on both clients |
 | Dedicated server | Not claimed |
+
+The plant, wheat, snowball and settings runs loaded the package with `--dev-mod`; the installed-package run used the player install path. Fixtures were prepared with creative commands; every harvest assertion ran in survival. LAN fixtures used an operator-enabled LAN world, so this does not prove a no-cheats LAN session. No mod errors appeared in the game logs. The release package will be this CI artifact renamed to `right_click_crops-2.0.0.hmod`.
 
 ## Published 1.0.1 release
 
