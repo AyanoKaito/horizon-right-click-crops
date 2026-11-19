@@ -4,9 +4,9 @@ Right-Click Crops performs world and inventory changes on Horizon's authoritativ
 
 Install the mod on every player's game. The host's settings decide what is harvested.
 
-## Status for 2.0.0
+## Status for 2.0.1
 
-- Single-player: passed on Horizon Nightly `2026-11-18` (`0b14f8a`).
+- Single-player: passed on Horizon Nightly `2026-11-19` (`f00125f`).
 - LAN host: passed.
 - LAN guest: passed.
 - Dedicated server: not advertised.
